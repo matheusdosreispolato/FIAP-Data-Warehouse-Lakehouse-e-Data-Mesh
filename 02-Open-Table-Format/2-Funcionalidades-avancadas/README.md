@@ -1,28 +1,39 @@
+# 02.2 - Funcionalidades avançadas com Apache Iceberg no Athena
+
 **Antes de começar, execute os passos abaixo para configurar o ambiente caso não tenha feito isso ainda na aula de HOJE: [Preparando Credenciais](../../00-create-codespaces/Inicio-de-aula.md)**
 
 Neste laboratório, você explorará funcionalidades avançadas do Apache Iceberg.
 
-Observe que o Amazon Athena fornece suporte integrado para o Apache Iceberg, para que você possa ler e gravar em tabelas Iceberg sem adicionar nenhuma dependência ou configuração adicional. Isso é válido para Iceberg [tabelas v2](https://iceberg.apache.org/spec/\#version\-2\-row\-level\-deletes) .
+Observe que o Amazon Athena fornece suporte integrado para o Apache Iceberg, permitindo ler e gravar em tabelas Iceberg sem dependências adicionais. Isso é válido para [tabelas Iceberg v2](https://iceberg.apache.org/spec/#version-2-row-level-deletes).
 
+## Principais pontos de aprendizagem
 
-## Principais pontos de aprendizagem:
+- particionamento oculto
+- uso de `MERGE INTO`
+- otimização de tabelas com `OPTIMIZE`
 
-* Particionamento oculto Iceberg
-* Como atualizar, excluir ou inserir linhas condicionalmente (mesclar) em tabelas Iceberg
-* Otimizando tabelas Iceberg
+## O que você terá ao final
+
+Ao final deste laboratório, você terá criado uma tabela particionada, aplicado alterações condicionais com `MERGE` e executado manutenção com `OPTIMIZE`.
+
+> [!IMPORTANT]
+> Este laboratório pressupõe que o banco `athena_iceberg_db` já exista e que o ambiente TPC-DS já tenha sido preparado no Athena.
 
 ---
 
-## Particionamento Oculto
+## Parte 1 - Particionamento oculto
 
-O ​​particionamento oculto do Iceberg é uma melhoria em relação à abordagem do Hive que torna o particionamento declarativo. Ao criar uma tabela, você pode configurar como particioná-la usando uma construção chamada especificação de partição, como `day(event_ts)`. Essas expressões dizem ao Iceberg como derivar valores de partição no momento da gravação. No momento da leitura, o Iceberg usa os relacionamentos para converter automaticamente filtros de dados em filtros de partição.
+### Objetivo desta parte
 
+Criar uma tabela Iceberg particionada por ano e validar que o Athena aplica pruning automaticamente durante a leitura.
 
-O volume inicial de dados de vendas não é tão grande, portanto, você escolhe particionar os dados por ano de vendas usando a expressão `years(ws_sales_time)`.
+O particionamento oculto do Iceberg é uma melhoria sobre a abordagem tradicional do Hive. Em vez de o consumidor precisar conhecer explicitamente as colunas e valores de partição, o Iceberg consegue derivar e usar essas informações automaticamente.
 
-1. Crie a tabela Iceberg `web_sales_iceberg`. Copie a consulta abaixo no editor de consultas, substitua `<your-account-id>` pelo ID da conta atual e clique em **Executar** .
+Neste exercício, a tabela será particionada por ano com base em `ws_sales_time`.
 
-``` sql
+1. Crie a tabela `web_sales_iceberg`. Antes de executar, substitua `<your-account-id>` pelo ID da sua conta atual.
+
+```sql
 CREATE TABLE athena_iceberg_db.web_sales_iceberg (
     ws_order_number INT,
     ws_item_sk INT,
@@ -39,52 +50,46 @@ TBLPROPERTIES (
 );
 ```
 
-A consulta deverá ser executada com sucesso e você verá a mensagem "Consulta bem-sucedida" nos resultados da consulta.
+A consulta deve terminar com **Consulta bem-sucedida**.
 
+2. Insira os registros com ano anterior a 2001:
 
-2. Primeiro insira todos os registros de vendas antes do ano 2001\. Copie a consulta abaixo no editor de consultas e clique em **Executar**
-
-
-
-``` sql
+```sql
 INSERT INTO athena_iceberg_db.web_sales_iceberg
-SELECT * FROM tpcds.prepared_web_sales where year(ws_sales_time) < 2001; 
+SELECT * FROM tpcds.prepared_web_sales where year(ws_sales_time) < 2001;
 ```
 
-A consulta deve ser executada sem nenhum erro.
+3. Verifique se a tabela possui dados:
 
-3. Verifique se os dados foram inseridos
-
-``` sql
+```sql
 SELECT *
 FROM athena_iceberg_db.web_sales_iceberg
 LIMIT 10;
 ```
 
-4. Vamos consultar os arquivos de dados para validar se a tabela está particionada por ano
+4. Consulte os arquivos de dados para validar a partição por ano:
 
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."web_sales_iceberg$files"
 ```
 
 ![Create-iceberg-table](img/partitioned_by_year.png)
 
-Você pode confirmar que o particionamento oculto é usado no momento da consulta executando a seguinte consulta
+5. Agora execute a consulta abaixo para verificar o comportamento do particionamento oculto:
 
-``` sql
+```sql
 SELECT COUNT(DISTINCT(ws_order_number)) AS num_orders
 FROM athena_iceberg_db.web_sales_iceberg
 WHERE ws_sales_time >= TIMESTAMP '2000-01-01 00:00:00' AND ws_sales_time < TIMESTAMP '2000-02-01 00:00:00'
 ```
 
-Ao verificar as estatísticas da consulta, você pode ver que as **Linhas de entrada** são `14,46 milhões`.
+Ao verificar as estatísticas da consulta, as **Linhas de entrada** deverão refletir apenas a partição relevante.
 
 ![Hidden-stats](img/query_hidden_partition_stats.png)
 
-Essa é exatamente a quantidade de registros para a partição do ano 2000, o que demonstra que a remoção da partição foi realizada corretamente e, portanto, apenas os registros da partição 2000 são inspecionados:
+6. Confirme a distribuição por ano:
 
-``` sql
+```sql
 SELECT YEAR(ws_sales_time) as year, COUNT(*) AS records_per_year
 FROM athena_iceberg_db.web_sales_iceberg
 GROUP BY YEAR(ws_sales_time)
@@ -92,9 +97,9 @@ GROUP BY YEAR(ws_sales_time)
 
 ![Hidden-confirmation](img/query_hidden_partition_confirm.png)
 
-Você pode ver o número de linhas de entrada específicas para a consulta com a instrução [EXPLAIN ANALYZE](https://docs.aws.amazon.com/athena/latest/ug/athena-explain-statement.html):
+7. Se quiser inspecionar o plano de execução e o volume de leitura, execute:
 
-``` sql
+```sql
 EXPLAIN ANALYZE SELECT COUNT(DISTINCT(ws_order_number)) AS num_orders
 FROM athena_iceberg_db.web_sales_iceberg
 WHERE ws_sales_time >= TIMESTAMP '2000-01-01 00:00:00' AND ws_sales_time < TIMESTAMP '2000-02-01 00:00:00'
@@ -102,25 +107,29 @@ WHERE ws_sales_time >= TIMESTAMP '2000-01-01 00:00:00' AND ws_sales_time < TIMES
 
 ![Hidden-analyze](img/query_hidden_partition_analyze.png)
 
-O particionamento oculto traz os seguintes benefícios:
+### Checkpoint
 
-* O Iceberg lida com a tarefa propensa a erros de produzir valores de partição para linhas em uma tabela.
-* O Iceberg evita a leitura automática de partições desnecessárias. Os consumidores não precisam saber como a tabela é particionada e adicionar filtros extras às suas consultas.
+Se você chegou até aqui, então:
+
+- a tabela `web_sales_iceberg` existe
+- ela está particionada por ano
+- o Athena já consegue evitar leitura desnecessária de partições
 
 ---
 
-## Atualizar, excluir ou inserir linhas condicionalmente em uma tabela Apache Iceberg
+## Parte 2 - Atualizar, excluir ou inserir linhas condicionalmente com MERGE
 
-Nesta seção, você aprenderá como atualizar, excluir ou inserir linhas condicionalmente em uma tabela do Apache Iceberg. [MERGE INTO](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) é uma única instrução que pode combinar ações de atualização, exclusão e inserção.
+### Objetivo desta parte
 
-Observação: [MERGE INTO](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) é transacional e tem suporte apenas para tabelas Apache Iceberg no mecanismo Athena versão 3.
+Usar uma tabela auxiliar para aplicar inserções, atualizações e exclusões condicionais na tabela de destino.
 
-Você criará a tabela `merge_table` e a usará para mesclar registros na tabela de destino `athena_iceberg_db.web_sales_iceberg`.
+O comando [`MERGE INTO`](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) é transacional e combina `UPDATE`, `DELETE` e `INSERT` em uma única instrução.
 
+### Etapa 2.1 - Criando a tabela auxiliar
 
-5. Agora crie a tabela de mesclagem Iceberg: `merge_table`. Para criar a tabela, copie a consulta abaixo no editor de consultas, substitua `<your-account-id>` pelo ID da conta atual e clique em **Executar** .
+8. Crie a tabela `merge_table`. Antes de executar, substitua `<your-account-id>` pelo ID da sua conta atual.
 
-``` sql
+```sql
 CREATE TABLE athena_iceberg_db.merge_table (
     ws_order_number INT,
     ws_item_sk INT,
@@ -138,58 +147,51 @@ TBLPROPERTIES (
 );
 ```
 
----
+### Etapa 2.2 - Preparando os dados de merge
 
-6. Você tem a coluna `operation` na `merge_table`. Agora você adiciona registros dentro desta tabela e adiciona o valor da coluna `operation = 'U'` para identificar os registros a serem atualizados, `operation = 'I'` para identificar os registros a serem inseridos e `operation = 'D'` para identificar os registros a serem excluídos.
+A coluna `operation` identifica o que cada linha representa:
 
-   1. Insira linhas em `merge_table` com o sinalizador `operation = 'U'`. Copie a consulta abaixo no editor e clique em **Executar**
+- `U`: update
+- `I`: insert
+- `D`: delete
 
-  ``` sql
-  INSERT INTO athena_iceberg_db.merge_table
-  SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, 16 AS ws_warehouse_sk, ws_sales_time, 'U' as operation  
-  FROM tpcds.prepared_web_sales where year(ws_sales_time) = 2000 AND ws_warehouse_sk = 10 
-  ```
+9. Insira as linhas que representarão atualização:
 
-  Esta consulta atualiza todas as transações de vendas do armazém 10 no ano 2000 para o armazém 16.
+```sql
+INSERT INTO athena_iceberg_db.merge_table
+SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, 16 AS ws_warehouse_sk, ws_sales_time, 'U' as operation
+FROM tpcds.prepared_web_sales where year(ws_sales_time) = 2000 AND ws_warehouse_sk = 10
+```
 
-   2. Insira linhas em `merge_table` com o sinalizador `operation = 'I'`. Copie a consulta abaixo no editor e clique em **Executar**
+10. Insira as linhas que representarão inserção:
 
+```sql
+INSERT INTO athena_iceberg_db.merge_table
+SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time, 'I' as operation
+FROM tpcds.prepared_web_sales where year(ws_sales_time) = 2001
+```
 
+11. Insira as linhas que representarão exclusão:
 
-  ``` sql
-  INSERT INTO athena_iceberg_db.merge_table
-  SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time, 'I' as operation
-  FROM tpcds.prepared_web_sales where year(ws_sales_time) = 2001
-  ```
+```sql
+INSERT INTO athena_iceberg_db.merge_table
+SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time, 'D' as operation
+FROM tpcds.prepared_web_sales where year(ws_sales_time) = 1999 AND ws_warehouse_sk = 9
+```
 
-  Esta consulta representa inserções de transações de vendas no ano 2001.
+12. Valide se a tabela auxiliar contém registros para os 3 tipos de operação:
 
-
-  3. Insira linhas em `merge_table` com o sinalizador `operation = 'D'`. Copie a consulta abaixo no editor e clique em **Executar**
-
-  ``` sql
-  INSERT INTO athena_iceberg_db.merge_table
-  SELECT ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time, 'D' as operation  
-  FROM tpcds.prepared_web_sales where year(ws_sales_time) = 1999 AND ws_warehouse_sk = 9
-  ```
-
-  Esta consulta descarta todas as transações de vendas do depósito 9 no ano de 1999.
-
----
-
-7. Consulte a tabela `athena_iceberg_db.merge_table` e verifique se os registros estão sendo exibidos para `operation = 'U'`, `operation = 'I'` e `operation = 'D'`.
-
-``` sql
+```sql
 select operation, count(*) as num_records
 from athena_iceberg_db.merge_table
 group by operation
 ```
 
----
+### Etapa 2.3 - Aplicando o merge
 
-8. Você aplica todas as alterações contidas dentro da `merge_table` na tabela `web_sales_iceberg` usando o comando `MERGE`. Copie a consulta abaixo no editor e clique em **Executar**
+13. Aplique as alterações da `merge_table` na `web_sales_iceberg`:
 
-``` sql
+```sql
 MERGE INTO athena_iceberg_db.web_sales_iceberg t
 USING athena_iceberg_db.merge_table s
     ON t.ws_order_number = s.ws_order_number AND t.ws_item_sk = s.ws_item_sk
@@ -198,22 +200,20 @@ WHEN MATCHED AND s.operation like 'U' THEN UPDATE SET ws_order_number = s.ws_ord
 WHEN NOT MATCHED THEN INSERT (ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time) VALUES (s.ws_order_number, s.ws_item_sk, s.ws_quantity, s.ws_sales_price, s.ws_warehouse_sk, s.ws_sales_time)
 ```
 
----
+### Etapa 2.4 - Validando o merge
 
-9. Consulte a tabela para confirmar se a operação de mesclagem funcionou corretamente.
+14. Confirme que existem dados para o ano de 2001:
 
-* Agora você pode validar se tem dados para o ano de 2001 (as inserções estão aplicadas corretamente)
-
-``` sql
+```sql
 SELECT YEAR(ws_sales_time) AS year, COUNT(*) as records_per_year
 FROM athena_iceberg_db.web_sales_iceberg
 GROUP BY (YEAR(ws_sales_time))
 ORDER BY year
 ```
 
-* Você pode validar que não há nenhuma entrada com ID de depósito definida como 10 para o ano 2000 e, em vez disso, você tem entradas com ID de depósito definida como 16 (as atualizações são aplicadas corretamente)
+15. Confirme que, no ano 2000, os registros do depósito 10 foram atualizados para o depósito 16:
 
-``` sql
+```sql
 SELECT ws_warehouse_sk, COUNT(*) as records_per_warehouse
 FROM athena_iceberg_db.web_sales_iceberg
 WHERE YEAR(ws_sales_time) = 2000
@@ -221,9 +221,9 @@ GROUP BY ws_warehouse_sk
 ORDER BY ws_warehouse_sk
 ```
 
-* Você pode validar na tabela que não há nenhuma entrada com ID de depósito definido como 9 para o ano de 1999 (as exclusões são aplicadas corretamente)
+16. Confirme que, no ano 1999, não restaram entradas com depósito 9:
 
-``` sql
+```sql
 SELECT ws_warehouse_sk, COUNT(*) as records_per_warehouse
 FROM athena_iceberg_db.web_sales_iceberg
 WHERE YEAR(ws_sales_time) = 1999
@@ -231,70 +231,94 @@ GROUP BY ws_warehouse_sk
 ORDER BY ws_warehouse_sk
 ```
 
-Você pode consultar a tabela `snapshots` e ver um novo snapshot com o valor `operation` como `overwrite`
+> [!TIP]
+> Você também pode consultar a tabela de snapshots depois do `MERGE` e observar um novo snapshot com `operation = overwrite`.
+
+### Checkpoint
+
+Se você chegou até aqui, então:
+
+- a tabela auxiliar foi criada
+- os registros de update, insert e delete foram preparados
+- o `MERGE` foi aplicado com sucesso
+- a tabela de destino foi alterada conforme esperado
 
 ---
 
-## Otimizando tabelas Iceberg
+## Parte 3 - Otimizando tabelas Iceberg
 
-À medida que os dados se acumulam em uma tabela Iceberg, as consultas gradualmente se tornam menos eficientes devido ao aumento do tempo de processamento necessário para abrir arquivos. Custo computacional adicional é incorrido se a tabela contiver arquivos de exclusão. No Iceberg, os arquivos de exclusão armazenam exclusões de nível de linha, e o mecanismo deve aplicar as linhas excluídas aos resultados da consulta. Para ajudar a otimizar o desempenho das consultas em tabelas Iceberg, o Athena oferece suporte à compactação manual como um comando de manutenção de tabela. As compactações otimizam o layout estrutural da tabela sem alterar o conteúdo da tabela. Para fazer isso, você pode usar a consulta [OPTIMIZE](https://docs.aws.amazon.com/athena/latest/ug/optimize-statement.html) do Athena que faz o seguinte:
+### Objetivo desta parte
 
-* compactar arquivos pequenos em maiores (reduzir a quantidade de arquivos a serem abertos durante a leitura)
-* mesclar arquivos de exclusão de posição com arquivos de dados (evitar ter que aplicar exclusões de posição ao consultar)
+Usar `OPTIMIZE` para reorganizar os arquivos da tabela e melhorar eficiência de leitura.
 
-10.  Observe os arquivos de dados do iceberg da tabela antes de começar a otimizá-la.
+À medida que os dados se acumulam em uma tabela Iceberg, as consultas podem se tornar menos eficientes por causa da quantidade de arquivos a serem abertos e do custo extra de aplicar arquivos de exclusão.
 
-``` sql
+O comando [`OPTIMIZE`](https://docs.aws.amazon.com/athena/latest/ug/optimize-statement.html) ajuda a:
+
+- compactar arquivos pequenos em arquivos maiores
+- mesclar arquivos de exclusão com arquivos de dados
+
+17. Observe o estado atual dos arquivos da tabela:
+
+```sql
 SELECT * FROM "athena_iceberg_db"."web_sales_iceberg$files";
 ```
 
 ![Create-iceberg-table](img/file_list_before_compaction.png)
 
-Observe o nome do arquivo e a contagem de registros para cada partição
+18. Execute a otimização na tabela inteira:
 
-11. Você OTIMIZARÁ a tabela inteira. Copie a consulta abaixo no editor de consultas e clique em **Executar**
-
-``` sql
+```sql
 OPTIMIZE athena_iceberg_db.web_sales_iceberg REWRITE DATA USING BIN_PACK;
 ```
 
-Os resultados da consulta devem conter a mensagem "Consulta bem-sucedida".
+A consulta deve terminar com **Consulta bem-sucedida**.
 
-12. Agora execute novamente o comando para listar os arquivos da Tabela Iceberg.
+19. Consulte novamente os arquivos da tabela:
 
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."web_sales_iceberg$files";
 ```
 
 ![Create-iceberg-table](img/file_list_after_compression.png)
 
-Compare as capturas de tela da etapa 10 e da etapa 12. Observe que o número total de arquivos mudou de 5 para 4 arquivos.
+### O que observar
 
-Com o comando `OPTIMIZE` isso aconteceu:
+Compare a situação antes e depois:
 
-* Partição `ws_sales_time_year=1998`: os arquivos permanecem inalterados, pois você não altera a partição.
-* Partição `ws_sales_time_year=1999`: a contagem de registros é reduzida porque o comando `Merge` exclui registros (etapa 6\.3\).
-* Partição `ws_sales_time_year=2000`: compacta 2 arquivos em um porque o comando `Merge` atualizou os registros (etapa 6\.1\). Os arquivos de dados são mesclados com os arquivos de exclusão de posição.
-* Partições `ws_sales_time_year=2001`: os arquivos permanecem inalterados, pois você insere apenas registros dentro da partição
+- quantidade total de arquivos
+- quantidade de registros por partição
+- consolidação de arquivos de dados e arquivos de exclusão
 
-Você pode consultar a tabela `snapshots` e verá um novo snapshot com o valor `operation` como `replace`
+Em especial:
 
-``` sql
+- `ws_sales_time_year=1998`: sem mudanças relevantes
+- `ws_sales_time_year=1999`: redução por causa das exclusões
+- `ws_sales_time_year=2000`: consolidação após updates
+- `ws_sales_time_year=2001`: manutenção do estado esperado para as inserções
+
+20. Consulte os snapshots da tabela:
+
+```sql
 SELECT * FROM "athena_iceberg_db"."web_sales_iceberg$snapshots";
 ```
 
-Outra opção: você também pode OTIMIZAR apenas partições específicas, por exemplo 'ws\_sales\_time\_year\=2000' como segue.
+Você deverá ver um novo snapshot com `operation = replace`.
 
-``` sql
+21. Se quiser otimizar apenas uma partição específica, use:
+
+```sql
 OPTIMIZE athena_iceberg_db.web_sales_iceberg REWRITE DATA USING BIN_PACK
 where year(ws_sales_time) = 2000
 ```
 
-Para controlar o tamanho dos arquivos a serem selecionados para compactação e o tamanho do arquivo resultante após a compactação, você pode usar parâmetros de propriedade de tabela. Você pode usar o comando [ALTER TABLE SET PROPERTIES](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-managing-tables.html#querying-iceberg-alter-table-set-properties) para configurar as [propriedades de tabela](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-creating-tables.html#querying-iceberg-table-properties) relacionadas.
+### Ajustando propriedades de otimização
 
-Você pode especificar essas propriedades de tabela ao criar uma tabela. Exemplo:
+Você também pode controlar o tamanho dos arquivos e os limites usados pelo processo de compactação por meio de propriedades de tabela.
 
-``` sql
+Exemplo durante a criação:
+
+```sql
 CREATE TABLE athena_iceberg_db.web_sales_iceberg (
   ws_order_number INT,
   ws_item_sk INT,
@@ -314,12 +338,25 @@ CREATE TABLE athena_iceberg_db.web_sales_iceberg (
 );
 ```
 
-bem como posteriormente usando a instrução `ALTER TABLE`. Exemplo:
+Exemplo depois da criação:
 
-``` sql
+```sql
 ALTER TABLE athena_iceberg_db.web_sales_iceberg SET TBLPROPERTIES (
 'write_target_data_file_size_bytes'='346870912',
 'optimize_rewrite_delete_file_threshold'='16',
 'optimize_rewrite_data_file_threshold'='16'
 )
 ```
+
+---
+
+## Conclusão
+
+Se você chegou até aqui, então já executou:
+
+- particionamento oculto
+- leitura eficiente com pruning
+- `MERGE INTO` com insert, update e delete
+- manutenção com `OPTIMIZE`
+
+Este laboratório mostra como o Iceberg combina governança transacional, desempenho de leitura e manutenção operacional dentro do Athena.

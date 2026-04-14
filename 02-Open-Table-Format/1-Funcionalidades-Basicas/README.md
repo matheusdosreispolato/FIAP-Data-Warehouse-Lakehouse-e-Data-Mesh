@@ -1,48 +1,68 @@
+# 02.1 - Funcionalidades básicas com Apache Iceberg no Athena
+
 **Antes de começar, execute os passos abaixo para configurar o ambiente caso não tenha feito isso ainda na aula de HOJE: [Preparando Credenciais](../../00-create-codespaces/Inicio-de-aula.md)**
 
-Neste laboratório, você explorará as funcionalidades básicas do Apache Iceberg e aprenderá a criar e modificar tabelas do Iceberg com o Amazon Athena.
+Neste laboratório, você explorará as funcionalidades básicas do Apache Iceberg e aprenderá a criar e modificar tabelas Iceberg com o Amazon Athena.
 
-Observe que o Amazon Athena fornece suporte integrado para o Apache Iceberg, para que você possa ler e gravar em tabelas do Iceberg sem adicionar nenhuma dependência ou configuração adicional. Isso é válido para o [Tabelas Iceberg v2]([https://iceberg.apache.org/spec/\#version\-2\-row\-level\-deletes](https://iceberg.apache.org/spec/#version-2-row-level-deletes)).
-
+Observe que o Amazon Athena fornece suporte integrado para o Apache Iceberg, permitindo ler e gravar em tabelas Iceberg sem adicionar dependências ou configurações extras. Isso é válido para tabelas na [especificação Iceberg v2](https://iceberg.apache.org/spec/#version-2-row-level-deletes).
 
 ## Principais pontos de aprendizagem
 
----
-* Criando tabelas Iceberg
-* Atualizando um único registro
-* Excluindo registros de uma tabela Iceberg (conformidade com [GDPR](https://gdpr-info.eu/))
-* Evoluindo o esquema de uma tabela Iceberg
+- criar tabelas Iceberg
+- inserir dados em uma tabela Iceberg
+- atualizar um único registro
+- excluir registros de uma tabela Iceberg
+- consultar snapshots e histórico
+- evoluir o esquema da tabela
+
+## O que você terá ao final
+
+Ao final deste laboratório, você terá criado uma tabela Iceberg no Athena, carregado dados nela, executado operações de `INSERT`, `UPDATE`, `DELETE`, `FOR VERSION AS OF`, `FOR TIMESTAMP AS OF` e mudanças de esquema.
 
 ---
 
-## Pré-requisitos e criação do ambiente
+## Parte 1 - Pré-requisitos e criação do ambiente
 
-1. No codespace da disciplina, abra um terminal integrado (geralmente já esta aberto ao iniciar a ferramenta).
+### Resultado esperado desta parte
+
+Ao final desta etapa, o ambiente base do Athena estará pronto para o laboratório.
+
+1. No Codespaces da disciplina, abra um terminal integrado.
 
 ![](img/terminal-inicial.png)
 
-2. No terminal, Execute este script para preparar automaticamente o ambiente de laboratório no Athena, baixando os dados TPC-DS, enviando-os ao S3 e criando todas as tabelas necessárias para as consultas:
+2. No terminal, execute o script abaixo para preparar automaticamente o ambiente do laboratório no Athena, baixando os dados TPC-DS, enviando-os ao S3 e criando as tabelas necessárias:
 
-``` bash
- cd /workspaces/fiap-cloud-based-analytics && bash setup_athena_tpcds.sh
+```bash
+cd /workspaces/fiap-cloud-based-analytics && bash setup_athena_tpcds.sh
 ```
+
 ![img/criacao-tabela.png](img/criacao-tabela.png)
 
-## Configurando o Athena
+> [!IMPORTANT]
+> Só siga para a próxima parte depois que esse script terminar com sucesso.
 
-3. Navegue até o [console do Amazon Athena](https://us-east-1.console.aws.amazon.com/athena/home?region=us-east-1#/landing-page){:target="_blank"} usando o link.
+---
+
+## Parte 2 - Configurando o Athena
+
+### Resultado esperado desta parte
+
+Ao final desta etapa, o editor de consultas do Athena estará configurado para salvar resultados no bucket correto.
+
+3. Acesse o [console do Amazon Athena](https://us-east-1.console.aws.amazon.com/athena/home?region=us-east-1#/landing-page).
 
 4. Selecione **Consulte seus dados no console do Athena** e depois **Iniciar editor de consultas**.
 
 ![athena_searchbar](img/athena_launch_query_editor.png)
 
-5. Quando estiver dentro do Amazon Athena, clique em **Editar configurações**. Em seguida clique em **Gerenciar**.
+5. Quando estiver dentro do Athena, clique em **Editar configurações** e depois em **Gerenciar**.
 
 ![athena_setup](img/athena_initial_setup.png)
 
 ![athena_setup1](img/athena_initial_setup1.png)
 
-6. Clique em `Browse S3`, clique no bucket que inicia com `otfs-aula` e selecione a pasta `athena_res/`. CLique em `Choose` e `Salvar` em sequencia. Isso garantirá que os resultados das consultas sejam armazenados em um local específico no Amazon S3.
+6. Clique em `Browse S3`, selecione o bucket que inicia com `otfs-aula`, escolha a pasta `athena_res/` e depois clique em `Choose` e `Salvar`.
 
 ![athena_reslocation_setup](img/athena_reslocation_setup.png)
 
@@ -52,28 +72,39 @@ Observe que o Amazon Athena fornece suporte integrado para o Apache Iceberg, par
 
 ![athena_reslocation_setup](img/athena_reslocation_setup3.png)
 
-7. Selecione **Editor** para a página do editor de consultas.
+7. Volte para a tela do **Editor**.
 
 ![athena_editor](img/athena-editor.png)
 
+### Checkpoint
+
+Se você chegou até aqui, então:
+
+- o Athena está acessível
+- o editor de consultas está aberto
+- o local de saída das consultas foi configurado
+
 ---
 
-## Criando tabelas Iceberg
-8. Para criar o Banco de Dados, copie a consulta abaixo no editor de consultas e clique em **Executar**. Você precisa estar no **Editor de Consultas** do Athena para executar os comandos abaixo.
+## Parte 3 - Criando a base Iceberg
 
-``` sql
+### Resultado esperado desta parte
+
+Ao final desta etapa, o banco `athena_iceberg_db` e a tabela `customer_iceberg` estarão criados.
+
+8. Crie o banco de dados:
+
+```sql
 create database athena_iceberg_db;
 ```
 
 ![create-iceberg-db](img/create-iceberg-db.png)
 
----
-
-9. Para criar a tabela Iceberg, copie a consulta abaixo no editor de consultas, substitua `<your-account-id>` pelo ID da conta atual e clique em **Executar**.
+9. Crie a tabela Iceberg abaixo. Antes de executar, substitua `<your-account-id>` pelo ID da sua conta atual.
 
 ![](img/getIdAccount.png)
 
-``` sql
+```sql
 CREATE TABLE athena_iceberg_db.customer_iceberg (
     c_customer_sk INT COMMENT 'unique id',
     c_customer_id STRING,
@@ -92,105 +123,128 @@ TBLPROPERTIES (
 
 ![](img/create-iceberg-table-2.png)
 
----
+10. Valide se a tabela foi criada:
 
-10. Você pode verificar se a nova tabela `customer_iceberg` foi criada no banco de dados. Não há dados na tabela no momento.
-
-Você também pode selecionar o nome do banco de dados no menu suspenso no painel esquerdo para visualizar as tabelas dentro desse banco de dados.
-
-``` sql
+```sql
 SHOW TABLES IN athena_iceberg_db;
 ```
 
 ![Create-iceberg-table](img/show_tables_in_db.png)
 
----
+11. Consulte o esquema da tabela:
 
-11. Você pode verificar o esquema e a definição de partição da tabela com a consulta DESCRIBE. Você também pode selecionar o nome da tabela no painel esquerdo para visualizar os detalhes da tabela.
-
-``` sql
+```sql
 DESCRIBE customer_iceberg;
 ```
 
 ![Create-iceberg-table](img/describe_athena_iceberg_table.png)
 
+### O que validar aqui
+
+- o banco `athena_iceberg_db` existe
+- a tabela `customer_iceberg` existe
+- a tabela ainda está vazia
+
 ---
 
-## Estrutura da tabela iceberg
+## Parte 4 - Entendendo a estrutura da tabela Iceberg
 
-Aqui está um diagrama representando a estrutura da tabela subjacente do Iceberg:
-
-* Cada operação de confirmação (inserir, atualizar, excluir, mesclar, compactar) no Iceberg gera um novo Snapshot (por exemplo, S0, S1, ...).
-* Cada operação (confirmação, atualização de esquema, roll\-back, roll\-forward) no Iceberg gera um novo arquivo de metadados.
-* A tabela de catálogo do Iceberg aponta para o arquivo de metadados mais recente (ponteiro de metadados atual).
-* O arquivo de metadados, entre outras informações, contém a lista de snapshots disponíveis e o ID do snapshot atual.
-* Cada snapshot de tabela é associado a um arquivo de lista de manifesto.
-* Cada arquivo de lista de manifesto, entre outras informações, aponta para um ou muitos arquivos de manifesto.
-* Cada arquivo de manifesto aponta para um ou muitos arquivos de dados.
+A estrutura subjacente do Iceberg é organizada em metadados, snapshots, manifestos e arquivos de dados.
 
 ![Create-iceberg-table](img/iceberg_underlying_table_structure.png)
 
-As tabelas Athena Iceberg expõem vários metadados de tabela, como arquivos de tabela, manifestos, histórico, partição, snapshot por meio de tabelas de metadados. Nós os consultaremos em momentos diferentes como parte deste exercicio.
+Em alto nível:
 
-12. Você pode executar uma consulta `SELECT` usando a sintaxe `<table_name>$files` para consultar os metadados da tabela `files` do Iceberg. A tabela `customer` não contém nenhum dado no momento. Então, ela não mostrará nenhum arquivo.
+- cada operação confirmada gera um novo snapshot
+- cada alteração relevante gera um novo arquivo de metadados
+- a tabela aponta sempre para o metadado mais recente
+- os manifestos apontam para os arquivos de dados
 
-``` sql
+As tabelas Athena Iceberg expõem metadados de tabela, como `files`, `manifests`, `history` e `snapshots`.
+
+12. Consulte os arquivos da tabela. Como a tabela ainda não tem dados, o retorno deverá estar vazio.
+
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$files"
 ```
 
 ![Create-iceberg-table](img/athena_table_files_no_data.png)
 
-* Você pode executar uma consulta `SELECT` usando a sintaxe `<table_name>$manifests` para consultar os metadados da tabela `manifests` do Iceberg. A consulta abaixo não mostrará dados, pois a tabela está vazia.
+13. Consulte os manifestos da tabela:
 
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$manifests"
 ```
 
-* Você pode executar uma consulta `SELECT` usando a sintaxe `<table_name>$snapshots` para consultar os metadados da tabela `$snapshots` do Iceberg. A consulta abaixo não mostrará dados, pois a tabela está vazia.
+14. Consulte os snapshots da tabela:
 
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$snapshots"
 ```
 
+> [!NOTE]
+> Neste momento, essas consultas não devem retornar dados relevantes, porque a tabela ainda está vazia.
+
 ---
 
-13. Agora vamos pegar alguns registros da tabela `tpcds.prepared_customer` e inseri-los dentro da tabela `customer_iceberg`.
+## Parte 5 - Inserindo dados
 
-``` sql
+### Resultado esperado desta parte
+
+Ao final desta etapa, a tabela `customer_iceberg` terá dados carregados a partir de `tpcds.prepared_customer`.
+
+15. Insira os registros na tabela:
+
+```sql
 INSERT INTO athena_iceberg_db.customer_iceberg
-SELECT * FROM tpcds.prepared_customer 
+SELECT * FROM tpcds.prepared_customer
 ```
 
-Você deverá ver a mensagem "Consulta bem-sucedida" nos resultados da consulta.
+A execução deve terminar com a mensagem **Consulta bem-sucedida**.
 
----
+16. Consulte os primeiros registros:
 
-14. Verifique se os dados estão carregados corretamente consultando a tabela. Copie a consulta abaixo no editor de consultas e clique em **Executar**
-
-``` sql
+```sql
 select * from athena_iceberg_db.customer_iceberg limit 10;
 ```
 
 ![iceberg-test-query](img/query-iceberg-table.png)
 
+17. Conte o total de registros:
 
-15. Verifique se o comando insert inseriu 2.000.000 de registros de clientes na tabela.
-
-``` sql
+```sql
 select count(*) from athena_iceberg_db.customer_iceberg;
 ```
 
-Você deve ver `20000 'nos resultados da consulta.
+O resultado esperado é **2.000.000** registros.
 
+### Checkpoint
 
-16. Dentro do local da tabela do [Amazon S3](https://us-east-1.console.aws.amazon.com/s3/home?region=us-east-1): `s3://otfs-aula-<your-account-id>/datasets/athena_iceberg/customer_iceberg/` (`<your-account-id>` é o ID da sua conta atual), você verá duas pastas, **data** e **metadata**. A pasta **data** contém os dados reais no formato parquet e a pasta **metadata** contém vários arquivos de metadados.
-Existem três tipos de arquivos de metadados:
+Se você chegou até aqui, então:
 
-* arquivo de metadados, terminando com `.metadata.json`
-* lista de manifesto, terminando com `*-m*.avro`
-* arquivos de manifesto, no formato de `snap-*.avro`
+- a tabela foi carregada com sucesso
+- já existem arquivos de dados e metadados associados a ela
 
-Um novo arquivo de metadados será criado sempre que você fizer alterações na tabela.
+---
+
+## Parte 6 - Explorando dados e metadados no S3
+
+18. No local da tabela no [Amazon S3](https://us-east-1.console.aws.amazon.com/s3/home?region=us-east-1), abra:
+
+`s3://otfs-aula-<your-account-id>/datasets/athena_iceberg/customer_iceberg/`
+
+Você deverá ver duas pastas:
+
+- `data`
+- `metadata`
+
+A pasta `data` contém os dados em Parquet, e a pasta `metadata` contém os arquivos de metadados.
+
+Tipos de arquivo esperados em `metadata`:
+
+- arquivos `.metadata.json`
+- listas de manifesto `*-m*.avro`
+- manifestos `snap-*.avro`
 
 Pasta de metadados:
 
@@ -200,233 +254,238 @@ Pasta de dados:
 
 ![iceberg-test-query](img/iceberg_table_data_s3_folder.png)
 
-Agora vamos consultar os metadados da tabela Iceberg.
+19. Liste os arquivos da tabela:
 
-* Execute a seguinte instrução para listar os arquivos da tabela Iceberg.
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$files"
 ```
 
-Nos resultados da consulta, você verá detalhes sobre o caminho dos arquivos de dados do S3 na coluna `file_path` (extensão `.parquet`).
+20. Liste os manifestos:
 
-* Execute a seguinte instrução para listar os manifestos da tabela Iceberg.
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$manifests"
 ```
 
-Nos resultados da consulta, você verá detalhes sobre o caminho dos arquivos de manifesto do S3 na coluna `path` (extensão `.avro`).
+21. Consulte o histórico:
 
-* Execute a seguinte instrução para ver o histórico de ações da tabela Iceberg.
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$history"
 ```
 
-Nos resultados da consulta, você verá `snapshot_id`, `parent_id`, etc.
+22. Consulte os snapshots:
 
-
-* Execute a seguinte instrução para ver os detalhes do instantâneo da tabela Iceberg.
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$snapshots"
 ```
 
-Nos resultados da consulta, você verá `snapshot_id`, `parent_id`, `manifest_list`, etc.
+### O que observar
+
+- em `files`, caminhos de arquivos `.parquet`
+- em `manifests`, caminhos de arquivos `.avro`
+- em `history` e `snapshots`, valores como `snapshot_id`, `parent_id` e `manifest_list`
 
 ---
 
-**Parabéns, você criou uma tabela Iceberg! Agora vamos explorar alguns dos principais recursos do Athena Iceberg.**
+## Parte 7 - Atualizando registros
 
----
+### Resultado esperado desta parte
 
-## Atualizar registros
+Ao final desta etapa, o registro do cliente com `c_customer_sk = 15` terá sido corrigido.
 
-Sua próxima tarefa é fazer uma limpeza de dados. Na seção a seguir, você se concentrará em um cliente específico que inseriu seu sobrenome e e-mail incorretamente. Como resultado, esses dois campos são `Null` e você tem a tarefa de corrigi-los.
+23. Consulte o registro do cliente:
 
-17. Copie a consulta abaixo no editor de consultas e clique em **Executar**.
-
-``` sql
+```sql
 select * from athena_iceberg_db.customer_iceberg
 WHERE c_customer_sk = 15
 ```
 
-Observe que o sobrenome (`c_last_name`) e o endereço de e-mail (`c_email_address`) do usuário Tonya são `null`. Sua equipe de atendimento ao cliente coletou o sobrenome e o e-mail dele e os forneceu a você.
+Observe que `c_last_name` e `c_email_address` estão `null`.
 
-18. Você pode facilmente fazer essa alteração usando a consulta `UPDATE`. Consultas `UPDATE` aceitam um filtro para corresponder linhas a serem atualizadas. Copie a consulta abaixo no editor de consultas e clique em **Executar**.
+24. Atualize o registro:
 
-``` sql
+```sql
 UPDATE athena_iceberg_db.customer_iceberg
-SET c_last_name = 'John', c_email_address = 'johnTonya@abx.com' 
+SET c_last_name = 'John', c_email_address = 'johnTonya@abx.com'
 WHERE c_customer_sk = 15
 ```
 
-A consulta deverá ser executada com sucesso e você verá a mensagem "Consulta bem-sucedida" nos resultados da consulta.
+A consulta deve terminar com **Consulta bem-sucedida**.
 
-19. Verifique se o sobrenome e o endereço de e-mail de Tonya estão fixos. Copie a consulta abaixo no editor de consultas e clique em **Executar**.
+25. Valide a alteração:
 
-``` sql
+```sql
 select * from athena_iceberg_db.customer_iceberg
 WHERE c_customer_sk = 15
 ```
 
-Observe que o sobrenome e o endereço de e-mail de Tonya foram atualizados agora.
+Agora o sobrenome e o e-mail devem aparecer preenchidos.
 
-Athena usa [merge-on-read](https://docs.aws.amazon.com/pt_br/prescriptive-guidance/latest/apache-iceberg-on-aws/best-practices-write.html) para operações UPDATE.
-Isso significa que ele grava arquivos de exclusão de posição Iceberg e linhas recém-atualizadas como arquivos de dados na mesma transação.
-Arquivos de exclusão baseados em posição identificam linhas excluídas por arquivo e posição em um ou mais arquivos de dados.
-Em contraste com uma atualização **copy\-on\-write**, uma atualização merge\-on\-read é mais eficiente porque não reescreve arquivos de dados inteiros.
-Quando lemos uma tabela Iceberg configurada com atualizações **merge\-on\-read**, o mecanismo mescla os arquivos de exclusão de posição Iceberg com arquivos de dados para produzir a visualização mais recente de uma tabela.
-Uma operação UPDATE no Iceberg pode ser imaginada como uma combinação de INSERT INTO e DELETE.
+### Observação técnica
 
-20. Você pode verificar como essa operação UPDATE impacta a camada de dados do Iceberg. Observe que há um novo arquivo parquet criado devido à alteração acima. Você pode identificar esse novo arquivo verificando o timestamp do arquivo `LastModified` inspecionando na pasta **data** da tabela S3.
+Athena usa [merge-on-read](https://docs.aws.amazon.com/pt_br/prescriptive-guidance/latest/apache-iceberg-on-aws/best-practices-write.html) para operações `UPDATE`.
 
-A declaração a seguir lista os arquivos para uma tabela Iceberg.
+Na prática, isso significa que:
 
-``` sql
+- ele grava arquivos de exclusão por posição
+- grava também as linhas atualizadas
+- evita reescrever arquivos inteiros desnecessariamente
+
+26. Verifique o impacto da operação na camada de dados:
+
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$files"
 ```
 
 ![iceberg-test-query](img/data_file_path_after_update.png)
 
+> [!TIP]
+> Você pode identificar novos arquivos observando o `LastModified` no S3.
+
 ---
 
-## Delete rows from Iceberg table
+## Parte 8 - Excluindo registros
 
-Tonya escolheu optar por sair do aplicativo com base em seus direitos GDPR. Agora você precisa excluir seus registros.ds.
+### Resultado esperado desta parte
 
-Você pode fazer essa alteração facilmente usando a consulta `DELETE FROM`. As consultas `DELETE FROM` aceitam um filtro para corresponder às linhas a serem excluídas.
+Ao final desta etapa, o registro do cliente com `c_customer_sk = 15` terá sido removido da visualização atual da tabela.
 
+27. Exclua o registro:
 
-Athena usa `merge-on-read` para operações DELETE.
-Isso significa que ele cria arquivos de exclusão baseados em Position\ ao executar instruções DELETE.
-Arquivos de exclusão baseados em Position\ identificam linhas excluídas por arquivo e posição em um ou mais arquivos de dados.
-Em contraste com uma exclusão **copy\-on\-write**, uma exclusão merge\-on\-read é mais eficiente porque não reescreve arquivos de dados inteiros.
-Quando lemos uma tabela Iceberg configurada com exclusões **merge\-on\-read**, o mecanismo mescla os arquivos de exclusão de posição Iceberg com arquivos de dados para produzir a visualização mais recente de uma tabela.
-
-21. Copie a consulta abaixo no editor de consultas e clique em **Executar**.
-
-``` sql
+```sql
 delete from athena_iceberg_db.customer_iceberg
 WHERE c_customer_sk = 15
 ```
 
-A consulta deverá ser executada com sucesso e você verá a mensagem "Consulta bem-sucedida" nos resultados da consulta.
+A consulta deve terminar com **Consulta bem-sucedida**.
 
+28. Valide a remoção:
 
-22. Verifique se o registro de Tonya foi removido da tabela Iceberg.
-
-``` sql
+```sql
 SELECT * FROM athena_iceberg_db.customer_iceberg WHERE c_customer_sk = 15
 ```
 
-Você deverá ver "Nenhum resultado" nos resultados da consulta.
+O resultado esperado é **Nenhum resultado**.
+
+### Observação técnica
+
+Athena também usa `merge-on-read` para `DELETE`, criando arquivos de exclusão baseados em posição em vez de reescrever todos os arquivos de dados.
 
 ---
 
-## Time Travel
-O Time\-travel permite consultas reproduzíveis apontando para um instantâneo de tabela específico e permite que os usuários examinem facilmente as alterações.
+## Parte 9 - Time travel
 
-Cada alteração em uma tabela Iceberg cria uma versão independente da árvore de metadados, chamada snapshot. Você verá 3 snapshots no total usando a seguinte consulta.
+### Resultado esperado desta parte
 
-* operação de inserção inicial (append)
-* operação de atualização (overwrite)
-* operação de exclusão (delete)
-Observe que a consulta abaixo está direcionada a uma tabela de metadados de histórico.
+Ao final desta etapa, você terá consultado versões anteriores da tabela usando snapshot e timestamp.
 
-23. Para consultar o histórico da tabela, copie a consulta abaixo no editor de consultas e clique em **Executar**.
+29. Consulte o histórico da tabela:
 
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$history"
 order by made_current_at;
 ```
 
 ![iceberg-test-query](img/iceberg_table_history.png)
 
-* Linha 1 corresponde à operação de inserção inicial que realizamos para preencher a tabela. A coluna `snapshot_id` mostra o primeiro snapshot criado.
-* Linha 2 corresponde à operação de atualização que realizamos. A coluna `snapshot_id` mostra o segundo snapshot criado.
-* Linha 3 corresponde à operação de exclusão que realizamos. A coluna `snapshot_id` mostra o terceiro (mais recente) snapshot criado.
+Você deverá ver 3 momentos principais:
 
-24. Substitua `5418594889737463157` pelo `snapshot_id` da Linha 2 para consultar o estado da tabela correspondente ao segundo snapshot (antes da operação de exclusão ser executada).
+- inserção inicial
+- atualização
+- exclusão
 
-``` sql
+30. Substitua `5418594889737463157` pelo `snapshot_id` da linha correspondente ao segundo snapshot e consulte a tabela naquele ponto do tempo:
+
+```sql
 select * from athena_iceberg_db.customer_iceberg
 FOR VERSION AS OF  5418594889737463157
 WHERE c_customer_sk = 15
 ```
 
-No resultado da consulta, você deve ver o registro do cliente Tonya.
+O resultado deve mostrar o registro do cliente Tonya.
 
-25. Como alternativa, podemos usar a coluna `made_current_at` para consultar um instantâneo específico.
+31. Agora faça a mesma ideia usando timestamp. Substitua o timestamp abaixo pelo valor de `made_current_at` da linha correta no histórico:
 
-Copie a consulta abaixo no editor de consultas, substitua `2024-03-03 07:45:10.651 UTC` na consulta pelo valor `made_current_at` da Linha 2 (ponto 16\) e clique em **Executar**.
-
-``` sql
+```sql
 select * from athena_iceberg_db.customer_iceberg
 FOR TIMESTAMP AS OF TIMESTAMP '2024-04-16 17:21:49.771 UTC'
 WHERE c_customer_sk = 15
 ```
 
-No resultado da consulta, você deve ver o registro do cliente Tonya.
+Novamente, o resultado deve mostrar o registro do cliente Tonya.
 
 ---
 
-## Evolução do esquema
+## Parte 10 - Evolução do esquema
 
-As atualizações do esquema Iceberg são alterações somente de metadados. Nenhum arquivo de dados é alterado quando você executa uma atualização de esquema. O formato Iceberg suporta as seguintes alterações de evolução de esquema:
+### Resultado esperado desta parte
 
+Ao final desta etapa, a tabela terá uma coluna renomeada e uma nova coluna adicionada, sem reescrita dos arquivos de dados.
 
-* Adicionar – Adiciona uma nova coluna a uma tabela ou a uma struct aninhada.
-* Soltar – Remove uma coluna existente de uma tabela ou struct aninhada.
-* Renomear – Renomeia uma coluna ou campo existente em uma struct aninhada.
-* Reordenar – Altera a ordem das colunas.
-* Promoção de tipo – Amplia o tipo de uma coluna, campo de struct, chave de mapa, valor de mapa ou elemento de lista. Atualmente, os seguintes casos são suportados para tabelas Iceberg:
-  + inteiro para inteiro grande
-  + flutuante para duplo
-  + aumentando a precisão de um tipo decimal
+As mudanças de esquema no Iceberg são alterações de metadados. Em geral, os arquivos de dados não precisam ser recriados.
 
-26. Vamos consultar os arquivos de dados.
+32. Consulte os arquivos de dados da tabela:
 
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$files"
 ```
 
-Anote o caminho e o nome do arquivo de dados.
+Anote o caminho e o nome do arquivo.
 
-27. Agora altere o nome de uma coluna. Você pode usar o seguinte comando DDL para alterar o nome da coluna `c_email_address` para `email`.
+33. Renomeie a coluna `c_email_address` para `email`:
 
-``` sql
-ALTER TABLE athena_iceberg_db.customer_iceberg 
+```sql
+ALTER TABLE athena_iceberg_db.customer_iceberg
 change column c_email_address email STRING
 ```
 
-A consulta deve ser executada sem nenhum erro.
+34. Consulte os arquivos novamente:
 
-28. Vamos consultar os arquivos de dados novamente para verificar se eles não foram alterados.
-
-``` sql
+```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$files"
 ```
 
-Observe que não há nenhum novo arquivo de dados criado devido à evolução do esquema. As alterações do esquema são armazenadas na camada de metadados.
+Observe que não há novos arquivos de dados criados por causa da mudança de esquema.
 
-Verifique se a coluna foi renomeada executando a consulta `DESCRIBE customer_iceberg;`.
+35. Valide o novo esquema:
 
-29. Use o seguinte comando DDL para adicionar uma nova coluna chamada `c_birth_date`.
+```sql
+DESCRIBE customer_iceberg;
+```
 
-``` sql
+36. Adicione uma nova coluna chamada `c_birth_date`:
+
+```sql
 ALTER TABLE athena_iceberg_db.customer_iceberg ADD COLUMNS (c_birth_date int)
 ```
-Verifique se a nova coluna foi adicionada executando a consulta `DESCRIBE customer_iceberg;`.
 
+37. Valide novamente:
 
-30. Execute a consulta a seguir para ver a tabela com a nova coluna. Observe que a nova coluna tem valores `null` para todos os registros atualmente presentes dentro da tabela.
+```sql
+DESCRIBE customer_iceberg;
+```
 
+38. Consulte a tabela com a nova coluna:
 
-
-``` sql
+```sql
 SELECT *
 FROM athena_iceberg_db.customer_iceberg
 LIMIT 10
 ```
+
+A nova coluna deverá aparecer com valores `null` para os registros já existentes.
+
+---
+
+## Conclusão
+
+Se você chegou até aqui, então já executou:
+
+- criação de banco e tabela Iceberg
+- inserção de dados
+- leitura de metadados
+- atualização de registros
+- exclusão de registros
+- time travel por snapshot e timestamp
+- evolução de esquema
+
+Este laboratório forma a base para os próximos exercícios com funcionalidades mais avançadas do Iceberg.
