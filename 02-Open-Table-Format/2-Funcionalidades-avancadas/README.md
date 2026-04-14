@@ -52,6 +52,23 @@ TBLPROPERTIES (
 
 A consulta deve terminar com **Consulta bem-sucedida**.
 
+<details>
+<summary><b>Explicação do particionamento oculto no Iceberg</b></summary>
+<blockquote>
+
+O trecho `PARTITIONED BY (year(ws_sales_time))` diz ao Iceberg para organizar a tabela por ano a partir da coluna de tempo.
+
+A diferença importante é que o Iceberg faz isso com particionamento oculto: o usuário continua consultando a coluna original, enquanto o mecanismo usa a transformação de partição internamente para reduzir leitura desnecessária.
+
+Isso melhora desempenho sem exigir que a consulta referencie manualmente uma coluna física de partição, como era comum em layouts mais antigos.
+
+Documentação oficial:
+- [Particionamento em tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-creating-tables.html)
+- [Partitioning no Apache Iceberg](https://iceberg.apache.org/docs/latest/partitioning/)
+
+</blockquote>
+</details>
+
 2. Insira os registros com ano anterior a 2001:
 
 ```sql
@@ -106,6 +123,27 @@ WHERE ws_sales_time >= TIMESTAMP '2000-01-01 00:00:00' AND ws_sales_time < TIMES
 ```
 
 ![Hidden-analyze](img/query_hidden_partition_analyze.png)
+
+<details>
+<summary><b>Explicação do EXPLAIN ANALYZE neste contexto</b></summary>
+<blockquote>
+
+Aqui o objetivo não é revisar SQL básico, e sim confirmar se o Athena está aproveitando o particionamento do Iceberg durante a leitura.
+
+Ao analisar o plano e as estatísticas, observe principalmente:
+
+- volume de dados lido
+- linhas de entrada
+- redução de leitura para o intervalo de datas consultado
+
+Se o pruning estiver funcionando, o Athena acessará apenas a porção relevante da tabela em vez de varrer todos os dados.
+
+Documentação oficial:
+- [EXPLAIN no Athena](https://docs.aws.amazon.com/athena/latest/ug/athena-explain-statement.html)
+- [Como entender o resultado do EXPLAIN](https://docs.aws.amazon.com/athena/latest/ug/athena-explain-statement-understanding.html)
+
+</blockquote>
+</details>
 
 ### Checkpoint
 
@@ -200,6 +238,27 @@ WHEN MATCHED AND s.operation like 'U' THEN UPDATE SET ws_order_number = s.ws_ord
 WHEN NOT MATCHED THEN INSERT (ws_order_number, ws_item_sk, ws_quantity, ws_sales_price, ws_warehouse_sk, ws_sales_time) VALUES (s.ws_order_number, s.ws_item_sk, s.ws_quantity, s.ws_sales_price, s.ws_warehouse_sk, s.ws_sales_time)
 ```
 
+<details>
+<summary><b>Explicação do comando MERGE INTO</b></summary>
+<blockquote>
+
+O `MERGE INTO` aplica múltiplas regras em uma única operação transacional.
+
+Neste laboratório, ele usa a coluna `operation` da tabela auxiliar para decidir se cada linha deve:
+
+- atualizar um registro já existente
+- inserir um novo registro
+- excluir um registro correspondente
+
+Esse padrão é muito comum em pipelines de ingestão incremental, CDC e sincronização de tabelas analíticas.
+
+Documentação oficial:
+- [MERGE INTO no Athena](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html)
+- [Operações de linha no Apache Iceberg](https://iceberg.apache.org/spec/#row-level-deletes)
+
+</blockquote>
+</details>
+
 ### Etapa 2.4 - Validando o merge
 
 14. Confirme que existem dados para o ano de 2001:
@@ -273,6 +332,27 @@ OPTIMIZE athena_iceberg_db.web_sales_iceberg REWRITE DATA USING BIN_PACK;
 ```
 
 A consulta deve terminar com **Consulta bem-sucedida**.
+
+<details>
+<summary><b>Explicação do comando OPTIMIZE</b></summary>
+<blockquote>
+
+O `OPTIMIZE ... REWRITE DATA USING BIN_PACK` reorganiza os arquivos da tabela para melhorar eficiência de leitura.
+
+Na prática, esse processo ajuda a:
+
+- compactar muitos arquivos pequenos em menos arquivos maiores
+- reduzir o custo de leitura em consultas futuras
+- consolidar efeitos de alterações anteriores como updates e deletes
+
+Essa etapa faz bastante sentido em tabelas Iceberg sujeitas a manutenção frequente ou ingestão incremental.
+
+Documentação oficial:
+- [OPTIMIZE no Athena](https://docs.aws.amazon.com/athena/latest/ug/optimize-statement.html)
+- [Manutenção de tabelas no Apache Iceberg](https://iceberg.apache.org/docs/latest/maintenance/)
+
+</blockquote>
+</details>
 
 19. Consulte novamente os arquivos da tabela:
 

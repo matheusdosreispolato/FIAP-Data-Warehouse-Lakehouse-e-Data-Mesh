@@ -37,6 +37,28 @@ Ao final desta etapa, o ambiente base do Athena estará pronto para o laboratór
 cd /workspaces/fiap-cloud-based-analytics && bash setup_athena_tpcds.sh
 ```
 
+<details>
+<summary><b>Explicação do preparo automático do ambiente</b></summary>
+<blockquote>
+
+Esse script centraliza a preparação do laboratório para que o foco fique no Apache Iceberg e não no setup manual.
+
+No contexto desta aula, ele normalmente:
+
+- prepara ou baixa os dados de exemplo
+- envia os arquivos necessários para o S3
+- cria a base que será usada nas consultas do Athena
+- deixa o ambiente pronto para as operações com tabelas Iceberg
+
+Você não precisa memorizar o conteúdo interno do script neste momento. O importante é garantir que a base esteja pronta para as próximas consultas e alterações de dados.
+
+Documentação oficial:
+- [Usando Apache Iceberg com o Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html)
+- [Criação de tabelas no Athena](https://docs.aws.amazon.com/athena/latest/ug/create-table.html)
+
+</blockquote>
+</details>
+
 ![img/criacao-tabela.png](img/criacao-tabela.png)
 
 > [!IMPORTANT]
@@ -123,6 +145,26 @@ TBLPROPERTIES (
 
 ![](img/create-iceberg-table-2.png)
 
+<details>
+<summary><b>Explicação do comando de criação da tabela Iceberg</b></summary>
+<blockquote>
+
+Os pontos mais importantes dessa instrução são:
+
+- `LOCATION`: define o caminho no S3 onde os arquivos e metadados da tabela ficarão armazenados
+- `'table_type'='iceberg'`: informa ao Athena que a tabela usará o formato aberto Apache Iceberg
+- `'format'='PARQUET'`: define o formato físico dos dados, otimizado para analytics
+- `'write_compression'='zstd'`: reduz armazenamento e leitura com boa eficiência de compressão
+
+Essa combinação permite usar recursos como snapshots, histórico, evolução de esquema e operações de linha, que não fazem parte do comportamento tradicional de uma tabela externa simples.
+
+Documentação oficial:
+- [Criando tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-creating-tables.html)
+- [Especificação oficial do Apache Iceberg](https://iceberg.apache.org/spec/)
+
+</blockquote>
+</details>
+
 10. Valide se a tabela foi criada:
 
 ```sql
@@ -181,6 +223,26 @@ SELECT * FROM "athena_iceberg_db"."customer_iceberg$manifests"
 ```sql
 SELECT * FROM "athena_iceberg_db"."customer_iceberg$snapshots"
 ```
+
+<details>
+<summary><b>Explicação das tabelas de metadados do Iceberg</b></summary>
+<blockquote>
+
+Os sufixos especiais do Iceberg ajudam a enxergar a estrutura interna da tabela sem precisar abrir arquivos no S3 manualmente.
+
+- `$files`: mostra quais arquivos de dados estão ativos no snapshot atual
+- `$manifests`: lista os manifestos que agrupam referências para esses arquivos
+- `$snapshots`: apresenta cada versão confirmada da tabela
+- `$history`: mostra quando cada snapshot passou a ser o estado corrente
+
+Essas consultas são especialmente úteis para entender como o Iceberg implementa versionamento, governança e time travel.
+
+Documentação oficial:
+- [Consultar tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-table-data.html)
+- [Inspeção de metadados no Apache Iceberg](https://iceberg.apache.org/docs/latest/spark-queries/#inspecting-tables)
+
+</blockquote>
+</details>
 
 > [!NOTE]
 > Neste momento, essas consultas não devem retornar dados relevantes, porque a tabela ainda está vazia.
@@ -311,6 +373,23 @@ WHERE c_customer_sk = 15
 
 A consulta deve terminar com **Consulta bem-sucedida**.
 
+<details>
+<summary><b>Explicação do comando UPDATE em tabela Iceberg</b></summary>
+<blockquote>
+
+Aqui o Athena altera apenas o registro filtrado pelo `WHERE`, mas o ponto mais importante é o comportamento interno do Iceberg.
+
+Em vez de reescrever a tabela inteira, a engine trabalha com metadados, arquivos de deleção e novos arquivos de dados, preservando consistência e histórico da tabela.
+
+Esse é um dos motivos pelos quais o Iceberg é tão útil em cenários de data lake com necessidade de correção de dados.
+
+Documentação oficial:
+- [UPDATE em tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-update.html)
+- [Boas práticas de escrita com Apache Iceberg na AWS](https://docs.aws.amazon.com/prescriptive-guidance/latest/apache-iceberg-on-aws/best-practices-write.html)
+
+</blockquote>
+</details>
+
 25. Valide a alteração:
 
 ```sql
@@ -370,6 +449,21 @@ O resultado esperado é **Nenhum resultado**.
 
 Athena também usa `merge-on-read` para `DELETE`, criando arquivos de exclusão baseados em posição em vez de reescrever todos os arquivos de dados.
 
+<details>
+<summary><b>Explicação do comando DELETE em tabela Iceberg</b></summary>
+<blockquote>
+
+Quando você executa o `DELETE`, o snapshot atual passa a ignorar as linhas removidas. Em termos práticos, a exclusão é controlada pela camada de metadados do Iceberg, o que mantém o comportamento transacional da tabela.
+
+Isso é importante porque remove registros sem perder o histórico das versões anteriores, que ainda podem ser acessadas por time travel.
+
+Documentação oficial:
+- [DELETE em tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-delete.html)
+- [Operações de linha no Apache Iceberg](https://iceberg.apache.org/spec/#row-level-deletes)
+
+</blockquote>
+</details>
+
 ---
 
 ## Parte 9 - Time travel
@@ -412,6 +506,26 @@ WHERE c_customer_sk = 15
 ```
 
 Novamente, o resultado deve mostrar o registro do cliente Tonya.
+
+<details>
+<summary><b>Explicação do time travel com snapshot e timestamp</b></summary>
+<blockquote>
+
+Os operadores `FOR VERSION AS OF` e `FOR TIMESTAMP AS OF` permitem consultar estados anteriores da tabela sem restaurar arquivos manualmente.
+
+Use:
+
+- `FOR VERSION AS OF` quando você já conhece o `snapshot_id`
+- `FOR TIMESTAMP AS OF` quando quer ver como a tabela estava em um instante específico
+
+Esse recurso é muito útil para auditoria, depuração de pipelines e validação de mudanças em ambientes analíticos.
+
+Documentação oficial:
+- [Time travel em tabelas Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg-time-travel-and-version-travel-queries.html)
+- [Time travel no Apache Iceberg](https://iceberg.apache.org/docs/latest/spark-queries/#time-travel)
+
+</blockquote>
+</details>
 
 ---
 
@@ -473,6 +587,21 @@ LIMIT 10
 ```
 
 A nova coluna deverá aparecer com valores `null` para os registros já existentes.
+
+<details>
+<summary><b>Explicação da evolução de esquema no Iceberg</b></summary>
+<blockquote>
+
+Renomear colunas e adicionar novas colunas são operações de metadados no Iceberg. Por isso, em geral, os arquivos Parquet existentes não precisam ser recriados.
+
+Esse comportamento reduz custo, evita reprocessamentos desnecessários e facilita a evolução do modelo analítico ao longo do tempo.
+
+Documentação oficial:
+- [Usando Apache Iceberg com o Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html)
+- [Evolução de esquema no Apache Iceberg](https://iceberg.apache.org/docs/latest/evolution/#schema-evolution)
+
+</blockquote>
+</details>
 
 ---
 

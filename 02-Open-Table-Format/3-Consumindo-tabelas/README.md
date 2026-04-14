@@ -68,6 +68,21 @@ FROM customer_iceberg
 
 As consultas seguem a [especificação de formato Iceberg v2](https://iceberg.apache.org/spec/#format-versioning). Caso a consulta seja executada sobre uma tabela que tenha usado `merge-on-read` — por exemplo, tabelas em `athena_iceberg_db` — os arquivos de exclusão por posição serão mesclados com os arquivos de dados no momento da leitura.
 
+<details>
+<summary><b>Explicação do consumo de tabelas Iceberg no Athena</b></summary>
+<blockquote>
+
+Do ponto de vista do usuário, a leitura parece uma consulta SQL comum. A diferença é que o Athena resolve internamente a camada de snapshots, manifestos e arquivos de deleção do Iceberg antes de entregar o resultado final.
+
+Isso permite consultar dados atualizados e consistentes sem que você precise manipular arquivos do data lake manualmente.
+
+Documentação oficial:
+- [Consultar Apache Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html)
+- [Especificação oficial do Apache Iceberg](https://iceberg.apache.org/spec/)
+
+</blockquote>
+</details>
+
 ### Checkpoint
 
 Se você chegou até aqui, então:
@@ -100,10 +115,25 @@ WHERE ws_warehouse_sk in (5,6,10,11)
 GROUP BY ws_warehouse_sk
 ```
 
-Consulte a documentação oficial para interpretar os resultados com mais profundidade:
+<details>
+<summary><b>Explicação dos comandos EXPLAIN e EXPLAIN ANALYZE</b></summary>
+<blockquote>
 
+Nesta aula, esses comandos são úteis para enxergar como o Athena pretende executar a consulta e quanto trabalho realmente foi feito.
+
+Use:
+
+- `EXPLAIN` para ver o plano lógico e distribuído antes da execução completa
+- `EXPLAIN ANALYZE` para medir o comportamento real, incluindo leitura e processamento
+
+Esse tipo de análise ajuda a validar pruning, distribuição e custo de consultas sobre tabelas Iceberg.
+
+Documentação oficial:
 - [EXPLAIN e EXPLAIN ANALYZE no Athena](https://docs.aws.amazon.com/athena/latest/ug/athena-explain-statement.html)
 - [Como entender os resultados do EXPLAIN](https://docs.aws.amazon.com/athena/latest/ug/athena-explain-statement-understanding.html)
+
+</blockquote>
+</details>
 
 > [!TIP]
 > Use `EXPLAIN` quando quiser validar ou entender a estratégia de execução. Use `EXPLAIN ANALYZE` quando quiser inspecionar custo real de processamento.
@@ -128,6 +158,25 @@ GROUP BY ws_warehouse_sk
 ```
 
 A execução deve terminar com **Consulta bem-sucedida**.
+
+<details>
+<summary><b>Explicação do comando CREATE VIEW</b></summary>
+<blockquote>
+
+A view salva uma consulta lógica reutilizável sobre a tabela Iceberg, sem duplicar os dados no S3.
+
+Isso é útil para:
+
+- simplificar consultas recorrentes
+- padronizar métricas e recortes analíticos
+- entregar uma camada mais amigável para consumo por times de negócio
+
+Documentação oficial:
+- [CREATE VIEW no Athena](https://docs.aws.amazon.com/athena/latest/ug/views-console.html)
+- [Consultar Apache Iceberg no Athena](https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html)
+
+</blockquote>
+</details>
 
 6. Consulte a view criada:
 
