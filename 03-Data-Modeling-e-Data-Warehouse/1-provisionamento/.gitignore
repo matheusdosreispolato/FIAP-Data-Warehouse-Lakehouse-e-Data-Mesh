@@ -1,0 +1,18 @@
+# Terraform state e diretório local — nunca commitar
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+terraform.tfvars
+*.auto.tfvars
+
+# Plano binário
+*.tfplan
+
+# Logs
+crash.log
+crash.*.log
+
+# Arquivos temporários do script de carga
+/tmp/tpch_*
