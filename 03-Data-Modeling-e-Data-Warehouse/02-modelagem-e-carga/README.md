@@ -6,6 +6,14 @@
 
 Neste laboratório, você vai responder **exatamente a mesma pergunta de negócio** em três modelagens diferentes da mesma base, observar que os números divergem, e entender por que cada divergência tem uma justificativa legítima. No final, você registra a sua escolha em um `DECISION.md`, simulando o que um engenheiro de dados produz na vida real.
 
+## Arquitetura
+
+![Arquitetura das três modelagens](img/arquitetura-03-1.png)
+
+O diagrama mostra o fluxo: (1) o dataset TPC-H carregado no Lab 03.0 alimenta via `COPY` o schema `oltp_mirror` (Modelagem A), (2) a partir dele são derivados o `dw_star` com SCD1 (Modelagem B) e o `dw_star_scd2` com SCD2 (Modelagem C), e (3) a mesma query-âncora rodada nos três schemas produz três números (N₁, N₂ ≈ N₁, N₃ ≠ N₁). A faixa inferior explica **por que** N₃ diverge.
+
+Fonte editável: [`img/arquitetura-03-1.drawio`](img/arquitetura-03-1.drawio).
+
 ## Principais pontos de aprendizagem
 
 - diferenciar modelo operacional (OLTP) de modelo analítico (star schema)

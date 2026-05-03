@@ -5,6 +5,14 @@ Este é o primeiro passo do Lab 03. Aqui o aluno sobe — via **Terraform** — 
 > [!TIP]
 > Leia primeiro a [proposta geral do Lab 03](../README.md) antes de executar este passo. Aqui o foco é **operacional**: subir, usar, pausar, destruir.
 
+## Arquitetura
+
+![Arquitetura do provisionamento](img/arquitetura-provisionamento.png)
+
+O diagrama acima resume o fluxo: (1) aluno roda `terraform apply` no Codespaces, (2) Terraform assume a `LabRole` pré-existente, (3) três recursos são criados na conta AWS (S3, Glue Catalog, Redshift), (4) aluno conecta via Query Editor v2 e (5) roda uma única vez o `load_tpch.sh` para carregar o dataset.
+
+Fonte editável: [`img/arquitetura-provisionamento.drawio`](img/arquitetura-provisionamento.drawio) (abrir em [app.diagrams.net](https://app.diagrams.net/) ou draw.io Desktop).
+
 ---
 
 ## O que este provisionamento cria

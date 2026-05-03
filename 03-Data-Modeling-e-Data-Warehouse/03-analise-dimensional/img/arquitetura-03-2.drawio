@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-04T00:00:00.000Z" agent="Claude" version="24.0.0" type="device">
+  <diagram name="Arquitetura-Lab03-2" id="arq-lab03-2">
+    <mxGraphModel dx="2000" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0" background="#F5F6F8">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03.2 · Evolução do negócio — quando a modelagem tem que mudar" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="1200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Três mudanças de negócio aplicadas sobre o dw_star · cada uma força uma decisão de redesign no Redshift" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=0;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="62" width="1200" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;fontFamily=Helvetica;fontSize=11;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="28" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legenda" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1272" y="32" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-pain-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D13212;strokeColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="52" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-pain-lbl" value="dor de negócio" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1297" y="48" width="90" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-sol-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="72" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-sol-lbl" value="solução técnica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1297" y="68" width="90" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dec-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D77500;strokeColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="1410" y="52" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dec-lbl" value="decisão pedagógica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1432" y="48" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-arrow-line" value="" style="endArrow=classic;html=1;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1415" y="76" as="sourcePoint" />
+            <mxPoint x="1452" y="76" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-arrow-lbl" value="deriva do dw_star" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1458" y="68" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="base-col-title" value="Ponto de partida" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="evol-col-title" value="Três evoluções de negócio no mesmo trimestre" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="380" y="110" width="1170" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="base-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;arcSize=6;shadow=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="150" width="280" height="750" as="geometry" />
+        </mxCell>
+        <mxCell id="base-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#3334B9;strokeColor=#3334B9;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.redshift;" vertex="1" parent="1">
+          <mxGeometry x="176" y="170" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="base-name" value="dw_star no Redshift" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="222" width="280" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="base-sub" value="Star schema consolidado no Lab 03.1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="244" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dims-title" value="DIMENSÕES" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="280" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dim-data" value="dim_data · 2.5k linhas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="300" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dim-cust" value="dim_customer · 150k (SCD1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="332" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dim-prod" value="dim_produto · 200k" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="364" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dim-sup" value="dim_supplier · 10k" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="396" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dim-geo" value="dim_geografia · 25" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="80" y="428" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="base-fato-title" value="FATO" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="470" width="280" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="base-fato" value="f_vendas · 6M linhas&#10;DISTKEY(customer_sk)&#10;SORTKEY(data_sk)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6EAFB;strokeColor=#3334B9;fontSize=11;fontStyle=1;fontFamily=Courier New;fontColor=#3334B9;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="490" width="240" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="base-formula-title" value="CONTRATO ATUAL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="576" width="280" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="base-formula" value="receita_liquida =&#10;extendedprice × (1 − discount)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Courier New;fontColor=#232F3E;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="596" width="240" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="base-concept-title" value="CONCEITO ATUAL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="656" width="280" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="base-concept" value="Cliente ativo =&#10;comprou alguma vez" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Courier New;fontColor=#232F3E;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="676" width="240" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="base-perf-title" value="PERFORMANCE DASHBOARD" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;letterSpacing=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="736" width="280" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="base-perf" value="query executiva: ~20s&#10;SLA exigido: 5s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECE8;strokeColor=#D13212;fontSize=11;fontStyle=1;fontFamily=Courier New;fontColor=#D13212;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="756" width="240" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="base-role" value="Estado inicial" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="120" y="830" width="160" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev1-row-title" value="Evolução 1 · Marketplace exige comissão por fornecedor na receita" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="400" y="150" width="1150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-pain" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECE8;strokeColor=#D13212;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="180" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-pain-title" value="Dor de negócio" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="414" y="188" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-pain-text" value="Finanças quer recalcular receita considerando comissão variável por fornecedor.&#10;Todos os dashboards existentes usam a fórmula antiga." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="414" y="208" width="316" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev1-sol" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="180" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-sol-title" value="Solução técnica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="794" y="188" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-sol-step1" value="ALTER TABLE dim_supplier&#10;ADD COLUMN pct_comissao" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="794" y="212" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-sol-step2" value="view v1 (preserva fórmula antiga)&#10;view v2 (nova fórmula)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="984" y="212" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-sol-step3" value="MATERIALIZED VIEW mv_receita_v2_mensal · AUTO REFRESH YES" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="794" y="262" width="390" height="42" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev1-dec" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="180" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-dec-title" value="Decisão pedagógica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="188" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1-dec-text" value="Recalcular o histórico com a nova fórmula ou congelar os números antigos publicados?&#10;&#10;Depende de contratos externos, metas batidas e exigência regulatória." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="208" width="286" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev2-row-title" value="Evolução 2 · Marketing redefine &quot;cliente ativo&quot; (comprou nos últimos 12 meses · saldo &gt; -5000)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="400" y="380" width="1150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-pain" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECE8;strokeColor=#D13212;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="410" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-pain-title" value="Dor de negócio" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="414" y="418" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-pain-text" value="Perguntas do time:&#10;· ativos num instante&#10;· ativos por mês (tendência)&#10;· tempo total como ativo&#10;&#10;Uma modelagem só não resolve tudo." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="414" y="438" width="316" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev2-sol" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="410" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-sol-title" value="Solução técnica (duas abordagens)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="794" y="418" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-sol-opta" value="Opção A · SCD Tipo 2&#10;dim_customer_v2 com is_active&#10;+ valid_from/valid_to" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="794" y="442" width="195" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-sol-optb" value="Opção B · Snapshot periódico&#10;f_customer_status_mensal&#10;1 linha por cliente × mês" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="994" y="442" width="195" height="96" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev2-dec" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="410" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-dec-title" value="Decisão pedagógica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="418" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2-dec-text" value="SCD2 brilha em perguntas num instante.&#10;Snapshot brilha em contagens por período.&#10;&#10;Warehouse maduro costuma ter as duas, mas começa com a dominante." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="438" width="286" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev3-row-title" value="Evolução 3 · CEO exige SLA de 5s no dashboard executivo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="400" y="610" width="1150" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-pain" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECE8;strokeColor=#D13212;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="640" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-pain-title" value="Dor de negócio" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="414" y="648" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-pain-text" value="Query GROUP BY ano × mês × região × segmento leva ~20s.&#10;&#10;Dados vão crescer 3× no próximo ano.&#10;SLA exigido: 5s." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="414" y="668" width="316" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev3-sol" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="780" y="640" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-sol-title" value="Solução técnica (duas estratégias)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="794" y="648" width="280" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-sol-opta" value="Estratégia A · Redesign físico&#10;DISTKEY(data_sk)&#10;COMPOUND SORTKEY(data_sk, geografia_sk)&#10;Recria f_vendas (6M linhas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="794" y="672" width="195" height="96" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-sol-optb" value="Estratégia B · Pré-agregação&#10;MATERIALIZED VIEW&#10;mv_dashboard_executivo&#10;AUTO REFRESH YES" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#146EB4;fontSize=10;fontFamily=Helvetica;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="994" y="672" width="195" height="96" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev3-dec" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="640" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-dec-title" value="Decisão pedagógica" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="648" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3-dec-text" value="Medir antes de otimizar.&#10;MV pré-agregada tipicamente vence em ms; redesign da distkey afeta outras queries.&#10;&#10;Warehouse maduro usa as duas." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1254" y="668" width="286" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reflection-banner" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#687078;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="810" width="1150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-title" value="Reflexão final · entregável em DECISION.md" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="420" y="822" width="500" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-q1" value="• Recalcular histórico ou congelar?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="420" y="848" width="360" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-q2" value="• &quot;Correto&quot; = publicado na época ou regra de hoje?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="420" y="868" width="360" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-q3" value="• SCD2 em tudo ou só por demanda explícita?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="790" y="848" width="360" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-q4" value="• CEO pede &quot;tabela de 2023&quot; — como ela era ou como fica hoje?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="790" y="868" width="390" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="reflection-note" value="Maturidade =&#10;&quot;depende de X e Y&quot;,&#10;não &quot;sempre Z&quot;." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="822" width="200" height="74" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-base-ev1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.15;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="base-card" target="ev1-pain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-base-ev1-lbl" value="parte daqui" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-base-ev1">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-base-ev2" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="base-card" target="ev2-pain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-base-ev3" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.85;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="base-card" target="ev3-pain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ev1-pain-sol" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev1-pain" target="ev1-sol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ev1-sol-dec" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev1-sol" target="ev1-dec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ev2-pain-sol" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev2-pain" target="ev2-sol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ev2-sol-dec" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev2-sol" target="ev2-dec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-ev3-pain-sol" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev3-pain" target="ev3-sol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ev3-sol-dec" style="edgeStyle=none;html=1;rounded=0;strokeColor=#687078;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ev3-sol" target="ev3-dec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

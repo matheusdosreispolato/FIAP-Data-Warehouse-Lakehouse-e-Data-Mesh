@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-03T23:30:00.000Z" agent="Claude" version="24.0.0" type="device">
+  <diagram name="Arquitetura-Lab03-1" id="arq-lab03-1">
+    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0" background="#F5F6F8">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03.1 · Do OLTP ao Star Schema — três modelagens, três respostas" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="1100" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="A mesma query-âncora rodada em 3 schemas do mesmo Redshift produz 3 números legítimos" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=0;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="62" width="1100" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;fontFamily=Helvetica;fontSize=11;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="28" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legenda" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1272" y="32" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-sol-line" value="" style="endArrow=classic;html=1;strokeColor=#7AA116;strokeWidth=2;dashed=1;dashPattern=1 3;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="56" as="sourcePoint" />
+            <mxPoint x="1312" y="56" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-sol-lbl" value="carga de dados" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1318" y="48" width="90" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dash-line" value="" style="endArrow=classic;html=1;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="76" as="sourcePoint" />
+            <mxPoint x="1312" y="76" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-dash-lbl" value="derivação" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1318" y="68" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-query-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#146EB4;strokeColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="52" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-query-lbl" value="query-âncora" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="48" width="90" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-divergent-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D13212;strokeColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="72" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-divergent-lbl" value="resposta diverge" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="68" width="100" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="col0-title" value="Fonte" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="105" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col1-title" value="Modelagem A · OLTP Mirror" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="320" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col2-title" value="Modelagem B · Star SCD Tipo 1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="700" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col3-title" value="Modelagem C · Star SCD Tipo 2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3-source-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="210" width="200" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#7AA116;strokeColor=#7AA116;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="136" y="228" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-name" value="S3 · dataset TPC-H" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-tech" value="/raw/tpch/" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="300" width="200" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-tables" value="8 tabelas TPC-H SF1&#10;+ customer_history&#10;(reclassificações pós-1995)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="322" width="200" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-setup" value="Preparado no Lab 03.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7EC;strokeColor=#7AA116;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#5C7E10;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="80" y="390" width="160" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-source-grain" value="Grain origem:&#10;1 linha = 1 item de pedido" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="418" width="200" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="modA-boundary" value="schema oltp_mirror" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#687078;fontFamily=Helvetica;fontSize=11;fontStyle=1;strokeWidth=2;dashed=1;align=right;verticalAlign=top;fontColor=#687078;arcSize=4;spacingRight=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="200" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="240" width="300" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-name" value="Cópia relacional do TPC-H" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="340" y="252" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-desc" value="8 tabelas carregadas via COPY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="340" y="270" width="300" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-tables" value="region · nation · customer · supplier&#10;part · partsupp · orders · lineitem" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Courier New;fontColor=#232F3E;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="358" y="296" width="264" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-segmento" value="c.c_mktsegment → valor ATUAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="358" y="356" width="264" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-note" value="Reclassificação pós-1995 sobrescreve&#10;o segmento da época da venda" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="340" y="386" width="300" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="modA-role" value="Baseline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F3F5;strokeColor=#687078;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="460" y="428" width="60" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="modB-boundary" value="schema dw_star" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#146EB4;fontFamily=Helvetica;fontSize=11;fontStyle=1;strokeWidth=2;dashed=1;align=right;verticalAlign=top;fontColor=#146EB4;arcSize=4;spacingRight=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="700" y="200" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="240" width="300" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-name" value="Star Schema com SCD Tipo 1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="720" y="252" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-desc" value="5 dimensões + f_vendas (6M linhas)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="720" y="270" width="300" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-tables" value="dim_data · dim_customer · dim_produto&#10;dim_supplier · dim_geografia · f_vendas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=11;fontFamily=Courier New;fontColor=#146EB4;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="738" y="296" width="264" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-segmento" value="dim_customer.sg_segmento → ATUAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="738" y="356" width="264" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-note" value="Surrogate keys + DISTKEY(customer_sk)&#10;+ SORTKEY(data_sk) · receita materializada" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="720" y="386" width="300" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="modB-role" value="Star clássico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="830" y="428" width="80" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="modC-boundary" value="schema dw_star_scd2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7AA116;fontFamily=Helvetica;fontSize=11;fontStyle=1;strokeWidth=2;dashed=1;align=right;verticalAlign=top;fontColor=#5C7E10;arcSize=4;spacingRight=12;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="200" width="340" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="240" width="300" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-name" value="Star Schema com SCD Tipo 2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="252" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-desc" value="dim_customer versionada + f_vendas" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="270" width="300" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-tables" value="dim_customer com valid_from/valid_to&#10;(~157k linhas · reusa demais dims do B)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7EC;strokeColor=#7AA116;fontSize=11;fontFamily=Courier New;fontColor=#5C7E10;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1118" y="296" width="264" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-segmento" value="segmento VIGENTE na data do pedido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7EC;strokeColor=#7AA116;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#5C7E10;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1118" y="356" width="264" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-note" value="Join temporal: o.o_orderdate BETWEEN&#10;c.valid_from AND c.valid_to" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="386" width="300" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="modC-role" value="Preserva histórico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7EC;strokeColor=#7AA116;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#5C7E10;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="428" width="110" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="q-band-title" value="A mesma query-âncora, rodada nos 3 schemas:   &quot;Receita líquida do segmento AUTOMOBILE em 1995, por região&quot;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="510" width="1490" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qA-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="550" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qA-val" value="N₁" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="340" y="558" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qA-expl" value="Baseline" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="430" y="560" width="210" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="qA-expl2" value="Usa segmento atual do cliente&#10;(estado de hoje da tabela customer)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="430" y="582" width="210" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="qA-footer" value="5 joins · filtros espalhados" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="430" y="618" width="210" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qB-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="550" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qB-val" value="N₂" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;" vertex="1" parent="1">
+          <mxGeometry x="720" y="558" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qB-expl" value="≈ N₁" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="810" y="560" width="210" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="qB-expl2" value="Mesmo segmento atual (SCD1 sobrescreve)&#10;Diferença só por arredondamento" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="810" y="582" width="230" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="qB-footer" value="3 joins · receita já materializada" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="810" y="618" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qC-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECE8;strokeColor=#D13212;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="550" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="qC-val" value="N₃" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="558" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="qC-expl" value="≠ N₁" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="560" width="210" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="qC-expl2" value="Segmento vigente em 1995 (SCD2)&#10;5% dos clientes foram reclassificados" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="582" width="220" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="qC-footer" value="3 joins + range temporal" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="618" width="220" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="insight-banner" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="680" width="1490" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="insight-title" value="💡  Por que N₁ ≈ N₂ mas N₃ diverge?" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;" vertex="1" parent="1">
+          <mxGeometry x="80" y="692" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="insight-text" value="5% dos clientes TPC-H foram reclassificados sinteticamente depois de 1995 (customer_history, seed 42).&#10;• Nas modelagens A e B, o join usa o segmento ATUAL do cliente → a venda de 1995 é atribuída ao segmento de hoje.&#10;• Na modelagem C (SCD2), o join tem range temporal → a venda de 1995 é atribuída ao segmento VIGENTE naquela data." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="80" y="718" width="1030" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="insight-decision" value="Qual é o número certo?&#10;Depende da pergunta do negócio.&#10;&#10;Entregável do lab:&#10;DECISION.md (estilo ADR)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D77500;fontSize=11;fontStyle=1;fontFamily=Helvetica;fontColor=#D77500;arcSize=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="700" width="300" height="92" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-s3-A" style="edgeStyle=none;html=1;rounded=0;strokeColor=#7AA116;strokeWidth=2;dashed=1;dashPattern=1 3;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3-source-card" target="modA-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-s3-A-lbl" value="COPY (8 tabelas)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#5C7E10;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-s3-A">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-A-B" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="modA-card" target="modB-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-A-B-lbl" value="CTAS + surrogate keys" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-A-B">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-B-C" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="modB-card" target="modC-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-B-C-lbl" value="MERGE com customer_history" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-B-C">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-modA-qA" style="edgeStyle=none;html=1;rounded=0;strokeColor=#146EB4;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="modA-card" target="qA-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-modB-qB" style="edgeStyle=none;html=1;rounded=0;strokeColor=#146EB4;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="modB-card" target="qB-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-modC-qC" style="edgeStyle=none;html=1;rounded=0;strokeColor=#D13212;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="modC-card" target="qC-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

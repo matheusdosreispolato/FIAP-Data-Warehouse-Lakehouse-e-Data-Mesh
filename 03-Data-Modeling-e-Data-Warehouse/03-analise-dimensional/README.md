@@ -6,6 +6,14 @@
 
 Neste laboratório, você sente na prática por que a modelagem raramente sobrevive inalterada de um trimestre para o outro. Três evoluções de negócio são aplicadas sobre o star schema do Lab 03.1, e cada uma força uma decisão de redesign.
 
+## Arquitetura
+
+![Arquitetura das três evoluções](img/arquitetura-03-2.png)
+
+O diagrama resume: partindo do `dw_star` consolidado no Lab 03.1 (coluna da esquerda), três evoluções de negócio chegam no mesmo trimestre. Cada linha mostra a sequência **dor de negócio → solução técnica → decisão pedagógica**: Evolução 1 acrescenta comissão na receita (views + MV versionadas), Evolução 2 redefine "cliente ativo" (SCD2 vs. fato snapshot periódico), Evolução 3 exige SLA de 5s (redesign de distkey vs. MV pré-agregada). A faixa final sintetiza as quatro perguntas da reflexão do lab.
+
+Fonte editável: [`img/arquitetura-03-2.drawio`](img/arquitetura-03-2.drawio).
+
 ## Principais pontos de aprendizagem
 
 - versionar fórmulas de negócio com views lado a lado

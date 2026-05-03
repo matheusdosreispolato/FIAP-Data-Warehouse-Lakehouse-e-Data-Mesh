@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-05-03T23:00:00.000Z" agent="Claude" version="24.0.0" type="device">
+  <diagram name="Arquitetura-Lab03-0" id="arq-lab03-0">
+    <mxGraphModel dx="2000" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0" background="#F5F6F8">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Lab 03 · Provisionamento da Infraestrutura" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="30" width="900" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Como o `terraform apply` cria 15 recursos AWS a partir do Codespaces" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=0;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="62" width="900" height="22" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;fontFamily=Helvetica;fontSize=11;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="28" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legenda" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1272" y="32" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-sol-line" value="" style="endArrow=classic;html=1;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="56" as="sourcePoint" />
+            <mxPoint x="1312" y="56" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-sol-lbl" value="síncrona" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1318" y="48" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dash-line" value="" style="endArrow=classic;html=1;strokeColor=#232F3E;strokeWidth=2;dashed=1;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="76" as="sourcePoint" />
+            <mxPoint x="1312" y="76" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-dash-lbl" value="administrativa" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1318" y="68" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dot-line" value="" style="endArrow=classic;html=1;strokeColor=#7AA116;strokeWidth=2;dashed=1;dashPattern=1 3;fontFamily=Helvetica;fontSize=10;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1420" y="56" as="sourcePoint" />
+            <mxPoint x="1457" y="56" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-dot-lbl" value="dados" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1462" y="48" width="80" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-alert-swatch" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D13212;strokeColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="72" width="16" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-alert-lbl" value="atenção/custo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="68" width="90" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="col1-title" value="1 · Aluno no Codespaces" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="105" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col2-title" value="2 · Terraform assume LabRole" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="340" y="105" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col3-title" value="3 · AWS cria recursos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="620" y="105" width="680" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="col4-title" value="4 · Consumo" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="105" width="230" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cs-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="210" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cs-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#232F3E;strokeColor=#232F3E;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloud9;" vertex="1" parent="1">
+          <mxGeometry x="141" y="228" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="cs-name" value="GitHub Codespaces" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cs-sub" value="devcontainer FIAP Lab&#10;Terraform · AWS CLI · Python" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="302" width="260" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="cs-role" value="Aluno" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FF;strokeColor=#146EB4;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#146EB4;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="138" y="342" width="104" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tf-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="340" y="210" width="260" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="tf-icon" value="" style="sketch=0;shape=mxgraph.terraform;html=1;fillColor=#7B42BC;strokeColor=#7B42BC;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="446" y="226" width="48" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="tf-name" value="Terraform apply" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="340" y="284" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tf-sub" value="Provider AWS 5.x&#10;Orquestra criação de 15 recursos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="340" y="306" width="260" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="tf-labrole-note" value="assume `LabRole` (pré-criada)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E5;strokeColor=#D77500;fontSize=10;fontStyle=0;fontFamily=Helvetica;fontColor=#D77500;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="370" y="342" width="200" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aws-boundary" value="AWS Account · us-east-1 · Learner Lab Session (4h)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF9900;fontFamily=Helvetica;fontSize=12;fontStyle=1;strokeWidth=2;dashed=1;align=right;verticalAlign=top;fontColor=#D77500;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="620" y="200" width="680" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="240" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#7AA116;strokeColor=#7AA116;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="716" y="256" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-name" value="Amazon S3" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="640" y="308" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-tech" value="dw-lab-&amp;lt;ACCOUNT_ID&amp;gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="640" y="328" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-sub" value="/raw/tpch/  /staging/&#10;/results/  /unload/" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="640" y="350" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-role" value="Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F7EC;strokeColor=#7AA116;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#5C7E10;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="708" y="390" width="64" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="glue-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="860" y="240" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="glue-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#8C4FFF;strokeColor=#8C4FFF;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.glue;" vertex="1" parent="1">
+          <mxGeometry x="936" y="256" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="glue-name" value="AWS Glue Catalog" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="860" y="308" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="glue-tech" value="tpch_raw_&amp;lt;short_id&amp;gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="860" y="328" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="glue-sub" value="9 tabelas catalogadas&#10;(referência visual)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="860" y="350" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="glue-role" value="Metadados" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3EDFF;strokeColor=#8C4FFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#6D2FD9;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="924" y="390" width="72" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rs-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="240" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="rs-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#3334B9;strokeColor=#3334B9;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.redshift;" vertex="1" parent="1">
+          <mxGeometry x="1156" y="256" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="rs-name" value="Amazon Redshift" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="308" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rs-tech" value="ra3.large × 1 · dw_mba" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="328" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="rs-sub" value="VPC default · SG porta 5439&#10;encrypted · publicly accessible" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="350" width="200" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="rs-role" value="Data Warehouse" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6EAFB;strokeColor=#3334B9;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#3334B9;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="390" width="96" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aws-note" value="LabRole fica anexada aos 3 recursos e autoriza Redshift ↔ S3 ↔ Glue" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="620" y="432" width="680" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qe-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="210" width="230" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="qe-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#E7157B;strokeColor=#E7157B;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.management_console;" vertex="1" parent="1">
+          <mxGeometry x="1411" y="228" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="qe-name" value="Query Editor v2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="280" width="230" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="qe-sub" value="Acesso do aluno via browser&#10;(ou psql no Codespaces)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="302" width="230" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="qe-role" value="Console AWS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE7F3;strokeColor=#E7157B;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#BD1065;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1388" y="342" width="94" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="data-band-title" value="5 · Carga de dados — bash load_tpch.sh (rodado uma vez após o apply)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="1490" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tpch-public" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="540" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="tpch-icon" value="" style="sketch=0;outlineConnect=0;gradientColor=none;fillColor=#687078;strokeColor=#687078;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+          <mxGeometry x="141" y="556" width="48" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="tpch-name" value="TPC-H SF1 público" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="60" y="608" width="260" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="tpch-tech" value="s3://redshift-downloads/TPC-H/..." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="60" y="626" width="260" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="tpch-role" value="Externo · bucket AWS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F3F5;strokeColor=#687078;fontSize=10;fontStyle=1;fontFamily=Helvetica;fontColor=#687078;arcSize=30;" vertex="1" parent="1">
+          <mxGeometry x="108" y="648" width="164" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="script-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="540" width="500" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="script-name" value="load_tpch.sh (Codespaces)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="440" y="554" width="500" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="script-step1" value="1. baixa TPC-H SF1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="455" y="586" width="150" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="script-step2" value="2. converte p/ Parquet&#10;(pandas + pyarrow)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="615" y="586" width="150" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="script-step3" value="3. gera customer_history&#10;(seed 42)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F6F8;strokeColor=#D4D7DB;fontSize=11;fontFamily=Helvetica;fontColor=#232F3E;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="775" y="586" width="150" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="script-footer" value="Python 3 com pandas e pyarrow · ~5 minutos" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="440" y="634" width="500" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3-target-card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D4D7DB;arcSize=6;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="540" width="500" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-target-name" value="Dataset pronto em s3://dw-lab-.../raw/tpch/" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="554" width="500" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-target-desc" value="9 tabelas em Parquet (snappy), prontas para carga via COPY no Lab 03.1:&#10;region · nation · customer · supplier · part · partsupp · orders · lineitem · customer_history" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="580" width="480" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-target-footer" value="~ 850 MB comprimido · Lab 03.1 continua daqui" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=2;fontFamily=Helvetica;fontColor=#5C7E10;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="636" width="500" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cost-banner" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4F2;strokeColor=#D13212;arcSize=6;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="720" width="1490" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-title" value="⚠  Custo &amp; Teardown" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="80" y="732" width="400" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-cluster" value="Cluster Redshift ra3.large ligado" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="80" y="760" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-cluster-val" value="~ US$ 7 / dia   ·   ~ US$ 207 / mês" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="80" y="780" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-s3" value="S3 ~1 GB + Glue Catalog" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="430" y="760" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-s3-val" value="~ US$ 0,80 / mês (desprezível)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Helvetica;fontColor=#687078;" vertex="1" parent="1">
+          <mxGeometry x="430" y="780" width="320" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-destroy-title" value="Teardown obrigatório ao final da aula" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontFamily=Helvetica;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="780" y="760" width="380" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-destroy-cmd" value="terraform destroy   ·   3–5 min" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontFamily=Courier New;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="780" y="780" width="380" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-reason" value="Budget do Learner Lab é limitado.&#10;Cluster esquecido &gt; 2 semanas zera o orçamento." style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontFamily=Helvetica;fontColor=#D13212;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="760" width="340" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-cs-tf" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="cs-card" target="tf-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-cs-tf-lbl" value="executa apply" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-cs-tf">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-tf-s3" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;dashed=1;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tf-card" target="s3-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-tf-s3-lbl" value="cria bucket" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-tf-s3">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-tf-glue" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;dashed=1;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0.85;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tf-card" target="glue-card">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="561" y="170" />
+              <mxPoint x="960" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-tf-glue-lbl" value="cria catálogo" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-tf-glue">
+          <mxGeometry x="-0.1" relative="1" as="geometry"><mxPoint y="-8" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-tf-rs" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;dashed=1;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0.95;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tf-card" target="rs-card">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="587" y="145" />
+              <mxPoint x="1180" y="145" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e-tf-rs-lbl" value="cria cluster (5–8 min)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-tf-rs">
+          <mxGeometry x="0.1" relative="1" as="geometry"><mxPoint y="-8" as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-qe-rs" style="edgeStyle=none;html=1;rounded=0;strokeColor=#232F3E;strokeWidth=2;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="qe-card" target="rs-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-qe-rs-lbl" value="SQL 5439" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#232F3E;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-qe-rs">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-tpch-script" style="edgeStyle=none;html=1;rounded=0;strokeColor=#7AA116;strokeWidth=2;dashed=1;dashPattern=1 3;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tpch-public" target="script-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-tpch-script-lbl" value="download" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#5C7E10;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-tpch-script">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="e-script-s3target" style="edgeStyle=none;html=1;rounded=0;strokeColor=#7AA116;strokeWidth=2;dashed=1;dashPattern=1 3;fontFamily=Helvetica;fontSize=11;endArrow=classic;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="script-card" target="s3-target-card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-script-s3target-lbl" value="upload Parquet" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;fontSize=10;fontColor=#5C7E10;fillColor=#F5F6F8;strokeColor=none;" vertex="1" connectable="0" parent="e-script-s3target">
+          <mxGeometry x="0" y="-1" relative="1" as="geometry"><mxPoint as="offset" /></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
