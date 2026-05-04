@@ -51,6 +51,42 @@ Ao final deste laboratório, você terá implementado três modelagens do mesmo 
 > [!TIP]
 > Sempre que encontrar um bloco com o título **💡 Clique para entender**, abra esse trecho. Ele traz explicação detalhada do comando, contexto prático da aula e links oficiais para aprofundamento.
 
+## Mapa do lab
+
+| Parte | O que você faz | Tempo |
+|-------|----------------|-------|
+| [Parte 1](#parte-1---acessando-o-redshift-pelo-query-editor-v2) | Acessa o Redshift pelo Query Editor v2 | ~5 min |
+| [Parte 2](#parte-2---modelagem-a-espelho-do-oltp) | Modelagem A — espelho OLTP → produz `N₁` | ~15 min |
+| [Parte 3](#parte-3---modelagem-b-star-schema-com-scd-tipo-1) | Modelagem B — star schema SCD1 → produz `N₂` | ~20 min |
+| [Parte 4](#parte-4---modelagem-c-star-schema-com-scd-tipo-2) | Modelagem C — star schema SCD2 → produz `N₃` | ~15 min |
+| [Parte 5](#parte-5---comparando-os-três-resultados) | Compara `N₁`, `N₂`, `N₃` e escreve `DECISION.md` | ~5 min |
+
+<details>
+<summary><b>💡 Não viu a aula ainda? O que é um Data Warehouse em 3 parágrafos</b></summary>
+<blockquote>
+
+Um **Data Warehouse (DW)** é um banco de dados pensado para **responder perguntas de negócio**, não para atender transações. A mesma tabela `orders` em um banco OLTP (sistema de checkout) responde a perguntas como "qual o status do pedido 12345?". No DW, ela entra em um **fato** `f_vendas` que responde "qual foi a receita por região × mês × segmento em 1995?".
+
+A diferença não é cosmética — é de **escolha física e lógica**:
+
+| Dimensão | OLTP (transacional) | DW (analítico) |
+|----------|---------------------|----------------|
+| Otimizado para | leituras/escritas pontuais (1 pedido) | leituras agregadas (milhões de pedidos) |
+| Modelagem | 3NF, muitas tabelas pequenas | star/snowflake, poucas tabelas largas |
+| Armazenamento | row-based | columnar (Redshift, BigQuery, Snowflake) |
+| Join | chave primária, 1 registro | chave surrogate, milhões de registros |
+| Atualização | constante (milhares por segundo) | em lote (diário/horário) |
+| Query típica | `SELECT * FROM orders WHERE id = ?` | `SELECT SUM(revenue) GROUP BY region, year` |
+
+Neste lab você vai sentir essa diferença **numericamente**: a mesma pergunta ("quanto faturou o segmento AUTOMOBILE em 1995?") produz **três respostas diferentes** dependendo da escolha de modelagem. Não porque uma está errada, mas porque cada modelagem materializa um contrato semântico distinto. Esse é o ponto central do curso.
+
+Referências rápidas:
+- *The Data Warehouse Toolkit* (Kimball) — bíblia de modelagem dimensional
+- [Amazon Redshift Best Practices — data modeling](https://docs.aws.amazon.com/redshift/latest/dg/c_best-practices-choose-sort-keys.html)
+
+</blockquote>
+</details>
+
 ---
 
 ## Contexto
@@ -614,7 +650,7 @@ ANALYZE oltp_mirror.orders;
 ANALYZE oltp_mirror.lineitem;
 ```
 
-9. Confirme que os volumes batem com o TPC-H SF1:
+9. Confirme que os volumes batem com o TPC-H SF1. **Essa é sua primeira âncora de confiança** — se os números aqui não batem, **não siga adiante**. Qualquer divergência na query-âncora (passo 10) vai ser causada por problema aqui, e você gasta 20 minutos debugando a query para descobrir que a carga falhou:
 
 ```sql
 SELECT 'region'   AS tbl, COUNT(*) AS linhas, 5        AS esperado FROM oltp_mirror.region
@@ -1610,3 +1646,47 @@ Este laboratório serve como base para o próximo exercício, onde você vai sen
 ## Próximo passo
 
 No [Lab 03.2](../03-analise-dimensional/README.md) você vai partir do schema que escolheu aqui e ver o que acontece quando o **negócio evolui**: nova fórmula de receita, redefinição de "cliente ativo", SLA apertado de dashboard.
+
+---
+
+<details>
+<summary><b>💡 Glossário rápido — termos que aparecem neste lab</b></summary>
+<blockquote>
+
+| Termo | O que é |
+|-------|---------|
+| **Grain** | A "unidade" de uma linha do fato. No `f_vendas` deste lab, o grain é **um item de pedido** (1 linha = 1 `lineitem`). Trocar de grain (ex: "um pedido inteiro") invalida todas as queries existentes. |
+| **Surrogate key** (SK) | Chave artificial criada no DW, independente da chave do OLTP. `customer_sk = 1234` aponta para `c_custkey = 98765`. SKs isolam o DW de mudanças no sistema-fonte e são pré-requisito para SCD2. |
+| **SCD Tipo 1** | Atributo dimensional é **sobrescrito** quando muda. Cliente "vira SoHo"? A dim `dim_customer` agora diz "SoHo" para todos os pedidos — inclusive os passados. |
+| **SCD Tipo 2** | Atributo dimensional é **versionado** com `valid_from`/`valid_to`. Um cliente que mudou de segmento vira 2 linhas na dim, cada uma válida em um intervalo. Join da fato usa a versão vigente na data do pedido. |
+| **DISTKEY** | Coluna pela qual o Redshift distribui linhas entre os slices do cluster. Joins entre tabelas com a mesma DISTKEY ficam co-localizados (sem broadcast). Errar aqui = query 10× mais lenta. |
+| **SORTKEY** | Coluna pela qual o Redshift ordena fisicamente dentro de cada slice. Habilita **zone map pruning**: blocos inteiros pulados se não batem no filtro. Ótimo para datas em fatos. |
+| **Zone map** | Metadado que o Redshift mantém por bloco de 1MB contendo min/max de cada coluna. Permite pular leitura física. |
+| **COPY** | Comando do Redshift para carga paralela em massa a partir de S3. Sempre usar em vez de `INSERT` em lote. |
+| **ANALYZE** | Atualiza as estatísticas do otimizador. Rodar após cargas grandes ou os planos ficam ruins. |
+| **Materialized View** | View cujo resultado é materializado fisicamente. No Redshift pode ter `AUTO REFRESH` — o cluster recalcula automaticamente quando a fonte muda. |
+| **Query-âncora** | Neste lab, a query única que rodamos nas 3 modelagens para comparar `N₁`, `N₂`, `N₃`. Conceito genérico: uma query-padrão usada para validar equivalência entre modelos. |
+| **Star schema** | Modelagem dimensional clássica: 1 fato central + N dimensões conectadas por surrogate keys. Alternativa ao snowflake (mais normalizado) e ao data vault. |
+
+</blockquote>
+</details>
+
+<details>
+<summary><b>💡 Como pedir ajuda se travou</b></summary>
+<blockquote>
+
+Antes de abrir issue/perguntar no Slack, colete estas 4 informações — elas reduzem o tempo de resposta em 10×:
+
+1. **Em que passo você está** (ex: "passo 14c, criando dim_supplier")
+2. **Mensagem de erro literal** (copia-cola completo, não screenshot se der — texto é pesquisável)
+3. **Saída de `\dt oltp_mirror.*` e `\dt dw_star.*`** no Query Editor (mostra o que foi criado de fato)
+4. **O que você já tentou** (não é julgamento — é para não repetirmos sugestão que você já descartou)
+
+Canais (em ordem de prioridade):
+
+- **Issues do repositório**: [github.com/vamperst/FIAP-Data-Warehouse-Lakehouse-e-Data-Mesh/issues](https://github.com/vamperst/FIAP-Data-Warehouse-Lakehouse-e-Data-Mesh/issues) — melhor lugar para bugs reprodutíveis (o próximo aluno encontra a solução pesquisando)
+- **E-mail do professor**: `rafael.barbosa@fiap.com.br` — para dúvidas conceituais ou problemas na conta AWS Academy
+- **Antes de tudo**: releia o bloco `<details>` mais próximo com `⚠ Se der erro` — cobre ~80% dos tropeços conhecidos
+
+</blockquote>
+</details>

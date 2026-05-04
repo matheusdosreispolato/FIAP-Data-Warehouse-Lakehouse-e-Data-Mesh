@@ -53,6 +53,17 @@ Ao final deste laboratório, você terá aplicado três evoluções de negócio 
 > [!TIP]
 > Sempre que encontrar um bloco com o título **💡 Clique para entender**, abra esse trecho. Ele traz explicação detalhada do comando, contexto prático da aula e links oficiais para aprofundamento.
 
+## Mapa do lab
+
+| Parte | O que você faz | Tempo |
+|-------|----------------|-------|
+| [Parte 1](#parte-1---preparação-e-validação-do-ambiente) | Valida o cluster + schema do Lab 03.1 | ~5 min |
+| [Parte 2](#parte-2---evolução-1-nova-fórmula-de-receita) | Evolução 1 — nova fórmula de receita (v1 vs v2) | ~20 min |
+| [Parte 3](#parte-3---evolução-2-redefinição-de-cliente-ativo) | Evolução 2 — redefinir "cliente ativo" (SCD2 vs snapshot) | ~20 min |
+| [Parte 4](#parte-4---evolução-3-sla-de-5s-no-dashboard-executivo) | Evolução 3 — SLA de 5s (EXPLAIN + MV + redesign) | ~25 min |
+| [Parte 5](#parte-5---reflexão-final) | Reflexão final escrita | ~5 min |
+| [Parte 6](#parte-6---destruindo-a-infraestrutura-ao-final-da-aula) | `terraform destroy` | ~5 min |
+
 ---
 
 ## Contexto
@@ -1235,3 +1246,24 @@ Se você chegou até aqui, você aplicou:
 
 Este é o fechamento da trilha de Data Modeling + Data Warehouse. Você construiu um warehouse, sentiu as escolhas de modelagem impactarem números concretos, viu como a evolução do negócio força o modelo a se adaptar e aprendeu a limpar tudo para preservar o budget.
 
+---
+
+<details>
+<summary><b>💡 Como pedir ajuda se travou</b></summary>
+<blockquote>
+
+Antes de abrir issue/perguntar no Slack, colete estas 4 informações — elas reduzem o tempo de resposta em 10×:
+
+1. **Em que passo você está** (ex: "Evolução 3, rodando o EXPLAIN da MV")
+2. **Mensagem de erro literal** (copia-cola completo, texto é pesquisável)
+3. **Saída de `SELECT * FROM SYS_QUERY_HISTORY ORDER BY start_time DESC LIMIT 5`** (mostra se a query rodou, falhou, ou está em fila)
+4. **O que você já tentou** (evita sugestão redundante)
+
+Canais (em ordem de prioridade):
+
+- **Issues do repositório**: [github.com/vamperst/FIAP-Data-Warehouse-Lakehouse-e-Data-Mesh/issues](https://github.com/vamperst/FIAP-Data-Warehouse-Lakehouse-e-Data-Mesh/issues)
+- **E-mail do professor**: `rafael.barbosa@fiap.com.br`
+- **Antes de tudo**: releia o `<details>` mais próximo com `⚠ Se der erro` — cobre a maioria dos casos conhecidos
+
+</blockquote>
+</details>
