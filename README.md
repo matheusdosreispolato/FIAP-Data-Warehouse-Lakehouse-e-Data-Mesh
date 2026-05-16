@@ -70,9 +70,9 @@ Comece pelo setup e avance sequencialmente. Cada laboratório tem seu próprio `
 | 02.1 | **Iceberg — Funcionalidades básicas** | Criação de tabelas Apache Iceberg no Athena, operações de `INSERT`, `UPDATE`, `DELETE`, consulta de snapshots e histórico (`FOR VERSION AS OF`, `FOR TIMESTAMP AS OF`) e evolução de esquema. | [02-Open-Table-Format/01-Funcionalidades-Basicas](02-Open-Table-Format/01-Funcionalidades-Basicas/README.md) |
 | 02.2 | **Iceberg — Funcionalidades avançadas** | Particionamento oculto (hidden partitioning), uso de `MERGE INTO` para atualizações condicionais e manutenção de tabelas com `OPTIMIZE`. | [02-Open-Table-Format/02-Funcionalidades-avancadas](02-Open-Table-Format/02-Funcionalidades-avancadas/README.md) |
 | 02.3 | **Iceberg — Consumindo tabelas** | Consulta de tabelas Iceberg no Athena, uso de `EXPLAIN` e `EXPLAIN ANALYZE` para análise de planos e criação de views sobre tabelas Iceberg. | [02-Open-Table-Format/03-Consumindo-tabelas](02-Open-Table-Format/03-Consumindo-tabelas/README.md) |
-| 03.0 | **Data Modeling — Provisionamento** | Sobe toda a infraestrutura do lab (S3, Glue Data Catalog, cluster Redshift `ra3.large`) via Terraform e carrega o dataset TPC-H SF1 com o script `load_tpch.sh`. | [03-Data-Modeling-e-Data-Warehouse/01-provisionamento](03-Data-Modeling-e-Data-Warehouse/01-provisionamento/README.md) |
-| 03.1 | **Do OLTP ao Star Schema** | Implementa três modelagens da mesma base TPC-H (espelho OLTP, star SCD Tipo 1, star SCD Tipo 2), executa a mesma pergunta de negócio nas três e observa por que os números divergem legitimamente. Fecha com um `DECISION.md` no estilo ADR. | [03-Data-Modeling-e-Data-Warehouse/02-modelagem-e-carga](03-Data-Modeling-e-Data-Warehouse/02-modelagem-e-carga/README.md) |
-| 03.2 | **Evolução do negócio no warehouse** | Três evoluções aplicadas sobre o star schema: nova fórmula de receita com Materialized Views versionadas, redefinição de "cliente ativo" (SCD2 × fato snapshot periódico) e SLA de 5s no dashboard executivo via redesign de distkey + MV pré-agregada. | [03-Data-Modeling-e-Data-Warehouse/03-analise-dimensional](03-Data-Modeling-e-Data-Warehouse/03-analise-dimensional/README.md) |
+| 03.1 | **Data Modeling — Provisionamento** | Sobe toda a infraestrutura do lab (S3, Glue Data Catalog, cluster Redshift `ra3.large` × 2 nós) via Terraform com state remoto no S3 e carrega o dataset TPC-H SF10 (~10 GB, 60M linhas em `lineitem`) com o script `load_tpch.sh` em ~1m40 via S3-to-S3 server-side copy. | [03-Data-Modeling-e-Data-Warehouse/01-provisionamento](03-Data-Modeling-e-Data-Warehouse/01-provisionamento/README.md) |
+| 03.2 | **Do OLTP ao Star Schema** | Implementa três modelagens da mesma base TPC-H (espelho OLTP, star SCD Tipo 1, star SCD Tipo 2), executa a mesma pergunta de negócio nas três e observa por que os números divergem legitimamente. Fecha com um `DECISION.md` no estilo ADR. | [03-Data-Modeling-e-Data-Warehouse/02-modelagem-e-carga](03-Data-Modeling-e-Data-Warehouse/02-modelagem-e-carga/README.md) |
+| 03.3 | **Evolução do negócio no warehouse** | Três evoluções aplicadas sobre o star schema: nova fórmula de receita com Materialized Views versionadas, redefinição de "cliente ativo" (SCD2 × fato snapshot periódico) e SLA de 5s no dashboard executivo via redesign de distkey + MV pré-agregada. | [03-Data-Modeling-e-Data-Warehouse/03-analise-dimensional](03-Data-Modeling-e-Data-Warehouse/03-analise-dimensional/README.md) |
 
 ---
 
@@ -88,9 +88,9 @@ Comece pelo setup e avance sequencialmente. Cada laboratório tem seu próprio `
 │   ├── 02-Funcionalidades-avancadas/   # Lab Iceberg avançado (partitioning, MERGE, OPTIMIZE)
 │   └── 03-Consumindo-tabelas/          # Lab de consumo de tabelas Iceberg
 ├── 03-Data-Modeling-e-Data-Warehouse/
-│   ├── 01-provisionamento/             # Terraform + script de carga do TPC-H
-│   ├── 02-modelagem-e-carga/           # Lab 03.1 — três modelagens, três respostas
-│   └── 03-analise-dimensional/         # Lab 03.2 — evolução do negócio no warehouse
+│   ├── 01-provisionamento/             # Lab 03.1 — Terraform + script de carga do TPC-H SF10
+│   ├── 02-modelagem-e-carga/           # Lab 03.2 — três modelagens, três respostas
+│   └── 03-analise-dimensional/         # Lab 03.3 — evolução do negócio no warehouse
 ├── .devcontainer/                     # Configuração do GitHub Codespaces
 └── FIAP.png
 ```
@@ -109,13 +109,13 @@ Comece pelo setup e avance sequencialmente. Cada laboratório tem seu próprio `
 02.1 Iceberg básico ──▶ 02.2 Iceberg avançado ──▶ 02.3 Consumo
    │
    ▼
-03.0 Provisionamento ──▶ 03.1 Star Schema ──▶ 03.2 Evolução do negócio
+03.1 Provisionamento ──▶ 03.2 Star Schema ──▶ 03.3 Evolução do negócio
 ```
 
 Cada laboratório assume que os anteriores foram concluídos. Em especial:
 
 - Os labs de **Open Table Format (02.x)** dependem do bucket `base-config-<SEU RM>` criado no setup inicial e do ambiente TPC-DS preparado no primeiro lab do Athena.
-- Os labs de **Data Warehouse (03.x)** dependem da infraestrutura provisionada pelo Terraform em `03-Data-Modeling-e-Data-Warehouse/01-provisionamento/` e usam o dataset TPC-H SF1 carregado pelo script `load_tpch.sh`.
+- Os labs de **Data Warehouse (03.x)** dependem da infraestrutura provisionada pelo Terraform em `03-Data-Modeling-e-Data-Warehouse/01-provisionamento/` e usam o dataset TPC-H SF10 carregado pelo script `load_tpch.sh` (S3-to-S3 server-side copy, ~1m40).
 
 ---
 
@@ -124,7 +124,7 @@ Cada laboratório assume que os anteriores foram concluídos. Em especial:
 - **Blocos `💡 Clique para entender`**: sempre que encontrar nos READMEs, abra — eles trazem o contexto técnico e a motivação pedagógica de cada comando.
 - **Erro de tabela inexistente no Athena?** Verifique se o banco selecionado no painel esquerdo corresponde ao laboratório em que as tabelas foram criadas (`athena_iceberg_db`, `glue_iceberg_db`, etc.).
 - **Credenciais expiradas?** Cada sessão do AWS Academy dura 4 horas. Basta iniciar uma nova sessão e recopiar as credenciais para `~/.aws/credentials`.
-- **Cluster Redshift consumindo budget?** Ao final de cada aula, rode `terraform destroy` dentro de `03-Data-Modeling-e-Data-Warehouse/01-provisionamento/` para zerar os recursos. O cluster `ra3.large` é cobrado enquanto estiver provisionado, mesmo ocioso.
+- **Cluster Redshift consumindo budget?** Ao final de cada aula, rode `terraform destroy -auto-approve` dentro de `03-Data-Modeling-e-Data-Warehouse/01-provisionamento/` para zerar os recursos. O cluster `ra3.large` × 2 nós custa ~$0,51/h enquanto estiver provisionado, mesmo ocioso (~$12/dia se esquecer ligado).
 
 ---
 
