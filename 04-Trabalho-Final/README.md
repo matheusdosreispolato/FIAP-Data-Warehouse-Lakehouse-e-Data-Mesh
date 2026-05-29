@@ -7,7 +7,10 @@
 >
 > Você tem CSVs no S3, Athena à disposição, e exatamente **um dia** para entregar uma tabela Iceberg que aceite tanto a carga inicial quanto os deltas de CDC sem reescrever o mundo a cada batch. **Esse é o trabalho final.**
 
-Este é o **trabalho final avaliativo** da disciplina. Você vai construir, sozinho, um pipeline lakehouse ponta a ponta no Athena: provisiona o S3, gera dados sintéticos, cataloga via Glue Crawler, materializa em Iceberg, evolui o esquema, aplica delta com `MERGE INTO`, otimiza arquivos e entrega a query executiva. No final, você defende uma decisão técnica de evolução em um documento curto (estilo ADR).
+Este é o **trabalho final avaliativo** da disciplina. **É um trabalho em grupo** (composição definida pelo professor da turma). Vocês vão construir, juntos, um pipeline lakehouse ponta a ponta no Athena: provisionam o S3, geram dados sintéticos, catalogam via Glue Crawler, materializam em Iceberg, evoluem o esquema, aplicam delta com `MERGE INTO`, otimizam arquivos e entregam a query executiva. No final, defendem uma decisão técnica de evolução em um documento curto (estilo ADR).
+
+> [!IMPORTANT]
+> **Trabalho em grupo — não individual.** Combinem entre si quem roda os scripts no Codespaces de quem (a infra é provisionada uma vez, na conta AWS Academy de **um integrante** do grupo). A entrega é única para o grupo: um zip só, subido no portal por um dos membros.
 
 > [!WARNING]
 > **Pré-requisitos obrigatórios antes de começar:**
@@ -187,19 +190,25 @@ A primeira coluna de descrição em cada tabela diz a **categoria** (RAW / ICEBE
 
 ## Mapa do trabalho
 
-| Tarefa | O que você faz | Passos | Tempo |
-|--------|----------------|--------|-------|
-| [Tarefa 1](#tarefa-1---provisionamento-do-bucket-e-dataset) | Provisiona bucket S3 e gera os 3 CSVs | [1](#passo-1) · [2](#passo-2) · [3](#passo-3) | ~10 min |
-| [Tarefa 2](#tarefa-2---catalogar-no-glue-com-crawler) | Roda script que cria database + crawler e valida 3 tabelas raw | [4](#passo-4) | ~5 min |
-| [Tarefa 3](#tarefa-3---criar-tabelas-iceberg-vazias) | DDL Iceberg: `clientes_iceberg` + `pedidos_iceberg` | [5](#passo-5) · [6](#passo-6) · [7](#passo-7) | ~15 min |
-| [Tarefa 4](#tarefa-4---carregar-dados-iniciais) | `INSERT INTO ... SELECT` com `CAST(data_pedido AS DATE)` | [8](#passo-8) · [9](#passo-9) | ~15 min |
-| [Tarefa 5](#tarefa-5---adicionar-coluna-calculada-valor_final) | `ALTER TABLE` + `UPDATE` materializando `valor_final` | [10](#passo-10) · [11](#passo-11) · [12](#passo-12) | ~15 min |
-| [Tarefa 6](#tarefa-6---aplicar-delta-de-cdc-com-merge-into) | CTAS Iceberg do delta + `MERGE INTO` | [13](#passo-13) · [14](#passo-14) · [15](#passo-15) | ~25 min |
-| [Tarefa 7](#tarefa-7---otimizar-a-tabela) | `OPTIMIZE` (BIN_PACK) + `VACUUM` | [16](#passo-16) · [17](#passo-17) · [18](#passo-18) | ~15 min |
-| [Tarefa 8](#tarefa-8---entrega-da-query-executiva) | Top 5 clientes por receita líquida | [19](#passo-19) · [20](#passo-20) | ~10 min |
-| [Tarefa 9](#tarefa-9---escrever-decisionmd) | Defender a evolução técnica em ADR | [21](#passo-21) | ~30 min |
-| [Tarefa 10](#tarefa-10---empacotar-e-enviar-no-portal-fiap) | Monta o zip de entrega e sobe no portal FIAP | [22](#passo-22) · [23](#passo-23) | ~10 min |
-| [Tarefa 11](#tarefa-11---limpeza) | Limpa S3 + Glue para preservar budget Learner Lab | [24](#passo-24) | ~5 min |
+O trabalho está organizado em **3 fases**:
+
+- 🧰 **Fase A — Provisionamento (Tarefas 1-2):** automatizada por scripts. Você só roda 2 comandos no terminal e segue para a Fase B. Não há SQL para escrever aqui.
+- 🛠️ **Fase B — Desenvolvimento do trabalho (Tarefas 3-9):** **é onde o trabalho realmente acontece.** Aqui você escreve os SQLs no Athena, materializa a coluna calculada, aplica o MERGE, otimiza, responde a query executiva e escreve o `DECISION.md`.
+- 📦 **Fase C — Entrega e limpeza (Tarefas 10-11):** monta o zip, sobe no portal FIAP e limpa os recursos AWS.
+
+| Fase | Tarefa | O que você faz | Passos | Tempo |
+|------|--------|----------------|--------|-------|
+| 🧰 A | [Tarefa 1](#tarefa-1---provisionamento-do-bucket-e-dataset) | Provisiona bucket S3 e gera os 3 CSVs | [1](#passo-1) · [2](#passo-2) · [3](#passo-3) | ~10 min |
+| 🧰 A | [Tarefa 2](#tarefa-2---catalogar-no-glue-com-crawler) | Roda script que cria database + crawler e valida 3 tabelas raw | [4](#passo-4) | ~5 min |
+| 🛠️ B | [Tarefa 3](#tarefa-3---criar-tabelas-iceberg-vazias) | DDL Iceberg: `clientes_iceberg` + `pedidos_iceberg` | [5](#passo-5) · [6](#passo-6) · [7](#passo-7) | ~15 min |
+| 🛠️ B | [Tarefa 4](#tarefa-4---carregar-dados-iniciais) | `INSERT INTO ... SELECT` com `CAST(data_pedido AS DATE)` | [8](#passo-8) · [9](#passo-9) | ~15 min |
+| 🛠️ B | [Tarefa 5](#tarefa-5---adicionar-coluna-calculada-valor_final) | `ALTER TABLE` + `UPDATE` materializando `valor_final` | [10](#passo-10) · [11](#passo-11) · [12](#passo-12) | ~15 min |
+| 🛠️ B | [Tarefa 6](#tarefa-6---aplicar-delta-de-cdc-com-merge-into) | CTAS Iceberg do delta + `MERGE INTO` | [13](#passo-13) · [14](#passo-14) · [15](#passo-15) | ~25 min |
+| 🛠️ B | [Tarefa 7](#tarefa-7---otimizar-a-tabela) | `OPTIMIZE` (BIN_PACK) + `VACUUM` | [16](#passo-16) · [17](#passo-17) · [18](#passo-18) | ~15 min |
+| 🛠️ B | [Tarefa 8](#tarefa-8---entrega-da-query-executiva) | Top 5 clientes por receita líquida | [19](#passo-19) · [20](#passo-20) | ~10 min |
+| 🛠️ B | [Tarefa 9](#tarefa-9---escrever-decisionmd) | Defender a evolução técnica em ADR | [21](#passo-21) | ~30 min |
+| 📦 C | [Tarefa 10](#tarefa-10---empacotar-e-enviar-no-portal-fiap) | Monta o zip de entrega e sobe no portal FIAP | [22](#passo-22) · [23](#passo-23) | ~10 min |
+| 📦 C | [Tarefa 11](#tarefa-11---limpeza) | Limpa S3 + Glue para preservar budget Learner Lab | [24](#passo-24) | ~5 min |
 
 > [!TIP]
 > Se travou em algum passo, clique no número correspondente acima.
@@ -405,6 +414,11 @@ Se for "no objects in S3 path", rerrode `bash scripts/setup_aluno.sh` para garan
 - [ ] Script terminou com `[100%] Concluido com sucesso`
 
 ---
+
+---
+
+> [!IMPORTANT]
+> 🛠️ **Aqui começa o trabalho que vocês vão desenvolver.** As Tarefas 1 e 2 acima eram só provisionamento automatizado. Daqui em diante (Tarefas 3-9) é onde vocês escrevem os SQLs no Athena, aplicam as transformações e produzem os entregáveis. **É essa fase que o professor avalia.**
 
 ## Tarefa 3 - Criar tabelas Iceberg vazias
 
